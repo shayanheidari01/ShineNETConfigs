@@ -1,0 +1,63 @@
+name: Scrape V2Nodes and Update configs.txt
+
+on:
+  push:
+    paths:
+      - 'v2ray_mining.py'
+      - '.github/workflows/**'
+  schedule:
+    # every 6 hours (UTC). ویرایش کن به cron دلخواهت
+    - cron: '0 */1 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write   # اجازهٔ نوشتن به repo برای commit کردن فایل
+
+jobs:
+  scrape-and-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # نیاز به تاریخچه کامل برای diff/commit نیست اما امنه
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install requirements
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4
+
+      - name: Run scraper
+        run: |
+          python v2ray_mining.py
+
+      - name: Show diff (for logs)
+        run: |
+          git add configs.txt || true
+          git --no-pager diff --staged --configs || true || true
+
+      - name: Commit and push if changed
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Configure git user
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Add file(s)
+          git add configs.txt
+
+          # Only commit if there are changes
+          if ! git diff --quiet --staged; then
+            git commit -m "chore(scrape): update configs.txt (auto)"
+            # Push using the automatic GITHUB_TOKEN provided to actions/checkout
+            git push
+            echo "Pushed changes."
+          else
+            echo "No changes to commit."
+          fi
