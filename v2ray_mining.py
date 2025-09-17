@@ -15,6 +15,8 @@ import re
 import time
 import sys
 from pathlib import Path
+import json
+import base64
 
 # ---------------- SETTINGS ----------------
 BASE_URL = "https://www.v2nodes.com"
@@ -35,6 +37,9 @@ URI_RE = re.compile(
     re.IGNORECASE
 )
 
+# pattern to find regional flag emojis (pair of regional indicator symbols)
+FLAG_RE = re.compile(r'[\U0001F1E6-\U0001F1FF]{2}')
+
 def clean_uri(uri: str) -> str:
     if not uri:
         return uri
@@ -45,10 +50,72 @@ def clean_uri(uri: str) -> str:
     uri = uri.rstrip('.,;:!?)"\']')
     return uri
 
+def extract_flag_from_ps(ps: str) -> str:
+    """
+    Try to extract an ISO regional flag (two regional indicator symbols) from ps.
+    If none found, return the original ps trimmed (or empty string if ps falsy).
+    """
+    if not ps:
+        return ""
+    m = FLAG_RE.search(ps)
+    if m:
+        return m.group(0)
+    # fallback: try to return first few characters (trim) if no flag found
+    return ps.strip()[:4]  # keep short fallback (user asked only flag; this is conservative)
+
+def transform_vmess(uri: str) -> str:
+    """
+    Decode a vmess://<base64> JSON, extract a flag from 'ps' if present,
+    and replace only the 'ps' field with the flag (keeping all other fields).
+    If anything fails, return the original uri unchanged.
+    """
+    try:
+        prefix, payload = uri.split('://', 1)
+    except ValueError:
+        return uri
+
+    if prefix.lower() != 'vmess':
+        return uri
+
+    payload = payload.strip()
+    # strip fragment if any (we won't preserve fragment)
+    if '#' in payload:
+        payload = payload.split('#', 1)[0]
+
+    # fix padding
+    missing_padding = len(payload) % 4
+    if missing_padding:
+        payload += '=' * (4 - missing_padding)
+
+    try:
+        decoded = base64.b64decode(payload).decode('utf-8', errors='replace')
+        data = json.loads(decoded)
+    except Exception:
+        return uri
+
+    # extract existing ps and try to find a flag
+    ps = data.get('ps', '') or ''
+    flag = extract_flag_from_ps(ps)
+    if flag:
+        data['ps'] = flag
+    else:
+        # no flag found: keep original ps (trimmed) — comment out this line if you want empty ps instead
+        data['ps'] = ps.strip()
+
+    try:
+        new_json = json.dumps(data, ensure_ascii=False, separators=(',', ':'))
+        new_b64 = base64.b64encode(new_json.encode('utf-8')).decode('utf-8')
+        return 'vmess://' + new_b64
+    except Exception:
+        return uri
+
 def extract_configs_from_html(html: str) -> list:
     found = []
     for m in URI_RE.findall(html):
-        found.append(clean_uri(m))
+        candidate = clean_uri(m)
+        # transform vmess to keep only flag
+        candidate = transform_vmess(candidate) if candidate.lower().startswith('vmess://') else candidate
+        found.append(candidate)
 
     soup = BeautifulSoup(html, 'html.parser')
     # prefer hrefs in <a>
@@ -58,6 +125,8 @@ def extract_configs_from_html(html: str) -> list:
         m_href = URI_RE.search(href)
         if m_href:
             uri = clean_uri(m_href.group(0))
+            if uri.lower().startswith('vmess://'):
+                uri = transform_vmess(uri)
             # attach fragment from link text if link text contains a more complete fragment
             if '#' in text:
                 idx = text.find('#')
@@ -72,7 +141,10 @@ def extract_configs_from_html(html: str) -> list:
             continue
         if URI_RE.search(text):
             for m in URI_RE.findall(text):
-                found.append(clean_uri(m))
+                uri = clean_uri(m)
+                if uri.lower().startswith('vmess://'):
+                    uri = transform_vmess(uri)
+                found.append(uri)
 
     # check common text tags
     for tagname in ('pre', 'code', 'p', 'li', 'div', 'span'):
@@ -81,11 +153,17 @@ def extract_configs_from_html(html: str) -> list:
             if not txt:
                 continue
             for m in URI_RE.findall(txt):
-                found.append(clean_uri(m))
+                uri = clean_uri(m)
+                if uri.lower().startswith('vmess://'):
+                    uri = transform_vmess(uri)
+                found.append(uri)
 
     visible_text = soup.get_text(separator=' ', strip=True)
     for m in URI_RE.findall(visible_text):
-        found.append(clean_uri(m))
+        uri = clean_uri(m)
+        if uri.lower().startswith('vmess://'):
+            uri = transform_vmess(uri)
+        found.append(uri)
 
     # filter empties
     return [f for f in found if f]
@@ -147,4 +225,4 @@ def save_configs(configs: list, out_file: Path):
 if __name__ == "__main__":
     configs = scrape()
     # optionally sort or keep insertion order; here keep discovered order
-    save_configs(configs, OUTPUT_FILE)
+    save_configs(list(reversed(configs)), OUTPUT_FILE)
