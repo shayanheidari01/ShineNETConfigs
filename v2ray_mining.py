@@ -225,4 +225,4 @@ def save_configs(configs: list, out_file: Path):
 if __name__ == "__main__":
     configs = scrape()
     # optionally sort or keep insertion order; here keep discovered order
-    save_configs(list(reversed(configs)), OUTPUT_FILE)
+    save_configs(configs, OUTPUT_FILE)
