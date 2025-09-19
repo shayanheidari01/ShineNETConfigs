@@ -17,6 +17,10 @@ import sys
 from pathlib import Path
 import json
 import base64
+from python_v2ray.config_parser import parse_uri
+from python_v2ray.downloader import BinaryDownloader
+from python_v2ray.tester import ConnectionTester
+from concurrent.futures import ThreadPoolExecutor
 
 # ---------------- SETTINGS ----------------
 BASE_URL = "https://www.v2nodes.com"
@@ -165,8 +169,20 @@ def extract_configs_from_html(html: str) -> list:
             uri = transform_vmess(uri)
         found.append(uri)
 
-    # filter empties
-    return [f for f in found if f]
+    # filter empties and validate using python_v2ray
+    valid_found = []
+    for uri in found:
+        if not uri:
+            continue
+        # Additional check for vless: must contain '@' or ':'
+        if uri.lower().startswith('vless://') and ('@' not in uri or ':' not in uri):
+            continue
+        try:
+            if parse_uri(uri):
+                valid_found.append(uri)
+        except Exception:
+            pass  # skip invalid configs
+    return valid_found
 
 def extract_from_server(server_url: str) -> list:
     try:
@@ -179,35 +195,49 @@ def extract_from_server(server_url: str) -> list:
         return []
 
 def scrape(base_url=BASE_URL, pages=PAGES_TO_SCRAPE):
-    results = []
-    seen = set()
-    for page in range(1, pages + 1):
+    def fetch_page(page):
         page_url = f"{base_url}/?page={page}"
-        print(f"[INFO] scraping index page {page_url}")
         try:
             resp = requests.get(page_url, headers=HEADERS, timeout=REQUEST_TIMEOUT)
             resp.raise_for_status()
             soup = BeautifulSoup(resp.text, 'html.parser')
-
             server_links = []
             for a in soup.find_all('a', href=True):
                 href = a['href']
                 if re.match(r'^/servers/\d+/?', href):
                     server_links.append(href)
-            server_links = list(dict.fromkeys(server_links))
-            print(f"  → found {len(server_links)} server links on page {page}")
-
-            for rel in server_links:
-                server_url = base_url + rel
-                cfgs = extract_from_server(server_url)
-                for cfg in cfgs:
-                    if cfg not in seen:
-                        seen.add(cfg)
-                        results.append(cfg)
-                        print(f"    + new: {cfg[:200]}")
-                time.sleep(SLEEP_BETWEEN_REQUESTS)
+            return server_links
         except Exception as e:
             print(f"[WARN] index fetch error {page_url}: {e}", file=sys.stderr)
+            return []
+
+    print(f"[INFO] scraping {pages} index pages concurrently...")
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        page_results = list(executor.map(fetch_page, range(1, pages + 1)))
+
+    all_server_links = []
+    for links in page_results:
+        all_server_links.extend(links)
+    all_server_links = list(dict.fromkeys(all_server_links))
+    print(f"[INFO] total unique server links: {len(all_server_links)}")
+
+    def fetch_server(rel):
+        server_url = base_url + rel
+        cfgs = extract_from_server(server_url)
+        return cfgs
+
+    print("[INFO] scraping server pages concurrently...")
+    with ThreadPoolExecutor(max_workers=20) as executor:
+        server_results = list(executor.map(fetch_server, all_server_links))
+
+    results = []
+    seen = set()
+    for cfgs in server_results:
+        for cfg in cfgs:
+            if cfg not in seen:
+                seen.add(cfg)
+                results.append(cfg)
+                print(f"    + new: {cfg[:200]}")
     return results
 
 def save_configs(configs: list, out_file: Path):
@@ -224,5 +254,57 @@ def save_configs(configs: list, out_file: Path):
 
 if __name__ == "__main__":
     configs = scrape()
-    # optionally sort or keep insertion order; here keep discovered order
-    save_configs(configs, OUTPUT_FILE)
+    if not configs:
+        print("No configs found from scraping.")
+        exit(0)
+
+    project_root = Path(".")
+    print("--- Verifying binaries ---")
+    try:
+        downloader = BinaryDownloader(project_root)
+        downloader.ensure_all()
+    except Exception as e:
+        print(f"Fatal Error: {e}")
+        exit(1)
+
+    print("\n* Parsing URIs...")
+    parsed_configs = []
+    valid_uris = []
+    for uri in configs:
+        # Skip REALITY configs with empty password (missing spx=)
+        if 'reality' in uri.lower() and 'spx=' not in uri:
+            continue
+        try:
+            p = parse_uri(uri)
+            if p:
+                # Ensure unique tag to avoid conflicts in merged config
+                if hasattr(p, 'tag'):
+                    p.tag = f"config_{len(parsed_configs)}"
+                elif isinstance(p, dict) and 'tag' in p:
+                    p['tag'] = f"config_{len(parsed_configs)}"
+                parsed_configs.append(p)
+                valid_uris.append(uri)
+        except Exception:
+            pass
+    if not parsed_configs:
+        print("No valid configurations found after parsing.")
+        exit(0)
+
+    print(f"* Testing {len(parsed_configs)} configurations...")
+    tester = ConnectionTester(
+        vendor_path=str(project_root / "vendor"),
+        core_engine_path=str(project_root / "core_engine")
+    )
+    try:
+        results = tester.test_uris(parsed_configs)
+    except Exception as e:
+        print(f"Testing failed: {e}. Saving all parsed configs without ping test.")
+        save_configs(valid_uris, OUTPUT_FILE)
+        exit(0)
+
+    # Filter configs that have successful ping
+    valid_configs = [uri for uri, result in zip(valid_uris, results) if result.get('status') == 'success']
+    print(f"* After testing, {len(valid_configs)} valid configs with ping.")
+
+    # Save only valid ones
+    save_configs(valid_configs, OUTPUT_FILE)

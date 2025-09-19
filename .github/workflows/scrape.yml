@@ -7,7 +7,7 @@ on:
       - '.github/workflows/**'
   schedule:
     # every 6 hours (UTC). ویرایش کن به cron دلخواهت
-    - cron: '0 */1 * * *'
+    - cron: '0 */6 * * *'
   workflow_dispatch: {}
 
 permissions:
@@ -16,6 +16,7 @@ permissions:
 jobs:
   scrape-and-commit:
     runs-on: ubuntu-latest
+    timeout-minutes: 30  # افزایش timeout برای تست پینگ
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -30,7 +31,17 @@ jobs:
       - name: Install requirements
         run: |
           python -m pip install --upgrade pip
-          pip install requests beautifulsoup4
+          pip install requests beautifulsoup4 python-v2ray
+
+      - name: Cache binaries
+        uses: actions/cache@v3
+        with:
+          path: |
+            vendor/
+            core_engine/
+          key: ${{ runner.os }}-binaries-${{ hashFiles('**/v2ray_mining.py') }}
+          restore-keys: |
+            ${{ runner.os }}-binaries-
 
       - name: Run scraper
         run: |
