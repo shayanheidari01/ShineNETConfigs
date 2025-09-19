@@ -46,6 +46,8 @@ jobs:
       - name: Make binaries executable
         run: |
           chmod +x vendor/* core_engine/* || true
+          mv core_engine/core_engine core_engine/tester || true
+          ls -la vendor/ core_engine/
 
       - name: Run scraper
         run: |
