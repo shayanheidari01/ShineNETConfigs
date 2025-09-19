@@ -62,10 +62,20 @@ jobs:
             first_file=$(find core_engine -maxdepth 1 -type f | head -n 1 || true)
             if [ -n "$first_file" ]; then
               echo "Using $first_file as tester candidate"
-              cp -f "$first_file" core_engine/tester || true
-              chmod +x core_engine/tester || true
+              cp -f "$first_file" vendor/tester || true
+              chmod +x vendor/tester || true
             else
               echo "No regular files found inside core_engine; attempting to find binaries elsewhere"
+            fi
+          fi
+          echo "Listing core_engine (after):"
+          if [ -d core_engine ]; then
+            ls -la core_engine || true
+          fi
+          echo "Listing vendor:"
+          if [ -d vendor ]; then
+            ls -la vendor || true
+          fi
 
       - name: Run scraper
         run: |
