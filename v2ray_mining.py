@@ -457,7 +457,7 @@ if __name__ == "__main__":
 
     print(f"* Testing {len(parsed_configs)} configurations...")
     vendor_path = str(project_root / "vendor")
-    core_engine_path = str(project_root / "core_engine")
+    core_engine_path = vendor_path
     try:
         tester = ConnectionTester(
             vendor_path=vendor_path,

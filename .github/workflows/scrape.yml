@@ -66,19 +66,6 @@ jobs:
               chmod +x core_engine/tester || true
             else
               echo "No regular files found inside core_engine; attempting to find binaries elsewhere"
-              # try common names in repo root
-              for f in core_engine/core_engine core_engine/core-engine core_engine/xray core_engine/tester core_engine/core; do
-                if [ -f "$f" ]; then
-                  cp -f "$f" core_engine/tester || true
-                  chmod +x core_engine/tester || true
-                fi
-              done
-            fi
-          fi
-
-          echo "Listing core_engine (after):"
-          ls -la core_engine || true
-        shell: bash
 
       - name: Run scraper
         run: |
