@@ -291,10 +291,17 @@ if __name__ == "__main__":
         exit(0)
 
     print(f"* Testing {len(parsed_configs)} configurations...")
-    tester = ConnectionTester(
-        vendor_path=str(project_root / "vendor"),
-        core_engine_path=str(project_root / "core_engine")
-    )
+    vendor_path = str(project_root / "vendor")
+    core_engine_path = vendor_path  # Use same path for tester executable
+    try:
+        tester = ConnectionTester(
+            vendor_path=vendor_path,
+            core_engine_path=core_engine_path
+        )
+    except FileNotFoundError as e:
+        print(f"Tester executable not found: {e}. Skipping ping test and saving all parsed configs.")
+        save_configs(valid_uris, OUTPUT_FILE)
+        exit(0)
     try:
         results = tester.test_uris(parsed_configs)
     except Exception as e:
