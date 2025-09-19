@@ -55,19 +55,37 @@ jobs:
             echo "core_engine not present yet."
           fi
 
-          # make anything inside core_engine executable (best-effort)
+          # Download binaries first to ensure they exist
+          python -c "
+from pathlib import Path
+from python_v2ray.downloader import BinaryDownloader
+downloader = BinaryDownloader(Path('.'))
+downloader.ensure_all()
+"
+
+          # Make anything inside core_engine and vendor executable (best-effort)
           if [ -d core_engine ]; then
             chmod +x core_engine/* || true
-            # select first regular file inside core_engine as tester (robust)
-            first_file=$(find core_engine -maxdepth 1 -type f | head -n 1 || true)
-            if [ -n "$first_file" ]; then
-              echo "Using $first_file as tester candidate"
-              cp -f "$first_file" vendor/tester || true
-              chmod +x vendor/tester || true
-            else
-              echo "No regular files found inside core_engine; attempting to find binaries elsewhere"
-            fi
           fi
+          
+          if [ -d vendor ]; then
+            chmod +x vendor/* || true
+          fi
+
+          # Ensure tester executable exists in core_engine
+          if [ -f vendor/core_engine ]; then
+            mkdir -p core_engine
+            cp vendor/core_engine core_engine/tester
+            chmod +x core_engine/tester
+            echo "Copied vendor/core_engine to core_engine/tester"
+          elif [ -f core_engine/core_engine ]; then
+            cp core_engine/core_engine core_engine/tester
+            chmod +x core_engine/tester
+            echo "Copied core_engine/core_engine to core_engine/tester"
+          else
+            echo "No core_engine binary found, will rely on script to handle it"
+          fi
+
           echo "Listing core_engine (after):"
           if [ -d core_engine ]; then
             ls -la core_engine || true
