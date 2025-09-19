@@ -21,7 +21,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # نیاز به تاریخچه کامل برای diff/commit نیست اما امنه
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -43,20 +43,43 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-binaries-
 
-      - name: Make binaries executable
+      - name: Make binaries executable (best-effort)
         run: |
-          chmod +x vendor/* core_engine/* || true
-          mv core_engine/core_engine core_engine/tester || true
-          ls -la vendor/ core_engine/
+          # try to make common names executable and move to tester name if present
+          set -e
+          if [ -d "core_engine" ]; then
+            echo "Contents of core_engine before changes:"
+            ls -la core_engine || true
+            chmod +x core_engine/* || true
+            # if there's a core_engine binary, move/copy it to tester for compatibility
+            if [ -f core_engine/core_engine ]; then
+              cp core_engine/core_engine core_engine/tester || true
+              chmod +x core_engine/tester || true
+            fi
+            # common other names
+            if [ -f core_engine/core-engine ]; then
+              cp core_engine/core-engine core_engine/tester || true
+              chmod +x core_engine/tester || true
+            fi
+            if [ -f core_engine/xray ]; then
+              cp core_engine/xray core_engine/tester || true
+              chmod +x core_engine/tester || true
+            fi
+          fi
+          echo "After attempted fixes:"
+          ls -la core_engine || true
+          ls -la vendor || true
+        shell: bash
 
       - name: Run scraper
         run: |
           python v2ray_mining.py
 
-      - name: Show diff (for logs)
+      - name: Show staged diff (for logs)
         run: |
           git add configs.txt || true
-          git --no-pager diff --staged --configs || true || true
+          echo "---- staged diff ----"
+          git --no-pager diff --staged || true
 
       - name: Commit and push if changed
         env:
@@ -66,15 +89,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Add file(s)
-          git add configs.txt
+          git add configs.txt || true
 
-          # Only commit if there are changes
+          # Only commit if there are staged changes
           if ! git diff --quiet --staged; then
             git commit -m "chore(scrape): update configs.txt (auto)"
-            # Push using the automatic GITHUB_TOKEN provided to actions/checkout
             git push
             echo "Pushed changes."
           else
             echo "No changes to commit."
           fi
+        shell: bash

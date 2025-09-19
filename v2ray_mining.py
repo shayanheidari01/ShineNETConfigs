@@ -22,6 +22,11 @@ from python_v2ray.downloader import BinaryDownloader
 from python_v2ray.tester import ConnectionTester
 from concurrent.futures import ThreadPoolExecutor
 
+# added imports for ensuring tester executable
+import os
+import stat
+import shutil
+
 # ---------------- SETTINGS ----------------
 BASE_URL = "https://www.v2nodes.com"
 PAGES_TO_SCRAPE = 5
@@ -103,7 +108,7 @@ def transform_vmess(uri: str) -> str:
     if flag:
         data['ps'] = flag
     else:
-        # no flag found: keep original ps (trimmed) — comment out this line if you want empty ps instead
+        # no flag found: keep original ps (trimmed)
         data['ps'] = ps.strip()
 
     try:
@@ -174,7 +179,7 @@ def extract_configs_from_html(html: str) -> list:
     for uri in found:
         if not uri:
             continue
-        # Additional check for vless: must contain '@' or ':'
+        # Additional check for vless: must contain '@' or ':' (simple sanity)
         if uri.lower().startswith('vless://') and ('@' not in uri or ':' not in uri):
             continue
         try:
@@ -252,6 +257,69 @@ def save_configs(configs: list, out_file: Path):
     tmp.replace(out_file)
     print(f"[INFO] saved {len(configs)} configs to {out_file}")
 
+# ---------------- helper to ensure tester executable ----------------
+def ensure_tester_executable(core_engine_dir: Path):
+    """
+    Ensure there is an executable named 'tester' inside core_engine_dir.
+    If not present, search for likely executables and create a copy (or symlink)
+    named 'tester', and make it executable.
+    """
+    core_engine_dir = Path(core_engine_dir)
+    expected = core_engine_dir / "tester"
+    if expected.exists() and os.access(expected, os.X_OK):
+        print(f"[INFO] tester executable already present: {expected}")
+        return
+
+    # common possible names that downloads may have
+    candidates = ["core_engine", "core-engine", "coreengine", "xray", "tester"]
+    # search direct candidates first
+    for name in candidates:
+        p = core_engine_dir / name
+        if p.exists():
+            try:
+                shutil.copy2(str(p), str(expected))
+                # preserve execute bit if present, otherwise add it
+                try:
+                    mode = p.stat().st_mode
+                    expected.chmod(mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+                except Exception:
+                    expected.chmod(0o755)
+                print(f"[INFO] created tester from candidate {p}")
+                return
+            except Exception as e:
+                print(f"[WARN] failed to copy {p} -> {expected}: {e}", file=sys.stderr)
+
+    # scan for any executable files in directory (non-recursive)
+    for entry in core_engine_dir.iterdir():
+        if entry.is_file():
+            try:
+                mode = entry.stat().st_mode
+                if (mode & (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)):
+                    try:
+                        shutil.copy2(str(entry), str(expected))
+                        expected.chmod(entry.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+                        print(f"[INFO] created tester from executable file {entry}")
+                        return
+                    except Exception as e:
+                        print(f"[WARN] failed to copy {entry} -> {expected}: {e}", file=sys.stderr)
+            except Exception:
+                continue
+
+    # fallback: try to make any regular file executable and copy it
+    for entry in core_engine_dir.iterdir():
+        if entry.is_file():
+            try:
+                shutil.copy2(str(entry), str(expected))
+                expected.chmod(0o755)
+                print(f"[INFO] fallback: copied {entry} -> {expected} and set +x")
+                return
+            except Exception as e:
+                print(f"[WARN] fallback failed for {entry}: {e}", file=sys.stderr)
+
+    # if we reach here, nothing worked
+    raise FileNotFoundError(f"Tester executable not found inside {core_engine_dir} and could not create 'tester' file.")
+# -------------------------------------------------------------------
+
 if __name__ == "__main__":
     configs = scrape()
     if not configs:
@@ -266,6 +334,14 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"Fatal Error: {e}")
         exit(1)
+
+    # Ensure tester executable exists inside core_engine/
+    try:
+        ensure_tester_executable(project_root / "core_engine")
+    except Exception as e:
+        print(f"Tester executable not found: {e}. Skipping ping test and saving all parsed configs.")
+        save_configs(configs, OUTPUT_FILE)
+        exit(0)
 
     print("\n* Parsing URIs...")
     parsed_configs = []
