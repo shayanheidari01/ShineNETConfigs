@@ -457,14 +457,14 @@ if __name__ == "__main__":
 
     print(f"* Testing {len(parsed_configs)} configurations...")
     vendor_path = str(project_root / "vendor")
-    core_engine_path = str(project_root / "core_engine")
+    core_engine_path = str(project_root / "core_engine" / "tester")
     try:
         tester = ConnectionTester(
             vendor_path=vendor_path,
             core_engine_path=core_engine_path
         )
     except FileNotFoundError as e:
-        print(f"ConnectionTester initialization failed: {e}. Saving parsed configs without testing.")
+        print(f"Tester executable not found: {e}. Skipping ping test and saving all parsed configs.")
         save_configs(valid_uris, OUTPUT_FILE)
         exit(0)
     try:
