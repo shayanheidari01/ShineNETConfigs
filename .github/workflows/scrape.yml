@@ -43,6 +43,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-binaries-
 
+      - name: Make binaries executable
+        run: |
+          chmod +x vendor/* core_engine/* || true
+
       - name: Run scraper
         run: |
           python v2ray_mining.py
