@@ -6,17 +6,16 @@ on:
       - 'v2ray_mining.py'
       - '.github/workflows/**'
   schedule:
-    # every 6 hours (UTC). ویرایش کن به cron دلخواهت
-    - cron: '0 */6 * * *'
+    - cron: '0 */1 * * *'
   workflow_dispatch: {}
 
 permissions:
-  contents: write   # اجازهٔ نوشتن به repo برای commit کردن فایل
+  contents: write
 
 jobs:
   scrape-and-commit:
     runs-on: ubuntu-latest
-    timeout-minutes: 30  # افزایش timeout برای تست پینگ
+    timeout-minutes: 30
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -45,53 +44,61 @@ jobs:
 
       - name: Make binaries executable (best-effort)
         run: |
-          # try to make common names executable and move to tester name if present
           set -e
-          if [ -d "core_engine" ]; then
-            echo "Contents of core_engine before changes:"
+          echo "PWD: $(pwd)"
+          echo "Listing root:"
+          ls -la || true
+          echo "Listing core_engine (before):"
+          if [ -d core_engine ]; then
             ls -la core_engine || true
+          else
+            echo "core_engine not present yet."
+          fi
+
+          # make anything inside core_engine executable (best-effort)
+          if [ -d core_engine ]; then
             chmod +x core_engine/* || true
-            # if there's a core_engine binary, move/copy it to tester for compatibility
-            if [ -f core_engine/core_engine ]; then
-              cp core_engine/core_engine core_engine/tester || true
+            # select first regular file inside core_engine as tester (robust)
+            first_file=$(find core_engine -maxdepth 1 -type f | head -n 1 || true)
+            if [ -n "$first_file" ]; then
+              echo "Using $first_file as tester candidate"
+              cp -f "$first_file" core_engine/tester || true
               chmod +x core_engine/tester || true
-            fi
-            # common other names
-            if [ -f core_engine/core-engine ]; then
-              cp core_engine/core-engine core_engine/tester || true
-              chmod +x core_engine/tester || true
-            fi
-            if [ -f core_engine/xray ]; then
-              cp core_engine/xray core_engine/tester || true
-              chmod +x core_engine/tester || true
+            else
+              echo "No regular files found inside core_engine; attempting to find binaries elsewhere"
+              # try common names in repo root
+              for f in core_engine/core_engine core_engine/core-engine core_engine/xray core_engine/tester core_engine/core; do
+                if [ -f "$f" ]; then
+                  cp -f "$f" core_engine/tester || true
+                  chmod +x core_engine/tester || true
+                fi
+              done
             fi
           fi
-          echo "After attempted fixes:"
+
+          echo "Listing core_engine (after):"
           ls -la core_engine || true
-          ls -la vendor || true
         shell: bash
 
       - name: Run scraper
         run: |
           python v2ray_mining.py
+        shell: bash
 
       - name: Show staged diff (for logs)
         run: |
           git add configs.txt || true
           echo "---- staged diff ----"
           git --no-pager diff --staged || true
+        shell: bash
 
       - name: Commit and push if changed
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Configure git user
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-
           git add configs.txt || true
-
-          # Only commit if there are staged changes
           if ! git diff --quiet --staged; then
             git commit -m "chore(scrape): update configs.txt (auto)"
             git push
