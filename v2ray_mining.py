@@ -585,6 +585,24 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"Warning: Could not set executable permissions for {tester_path}: {e}")
     
+    # Ensure xray binary has the correct name for Linux
+    if sys.platform != "win32" and sys.platform != "darwin":
+        vendor_dir = Path(vendor_path)
+        xray_expected = vendor_dir / "xray_linux"
+        if not xray_expected.exists():
+            # Look for other possible xray binary names
+            possible_xray_names = ["xray", "xray-linux-64", "xray.linux.64", "xray_linux"]
+            for name in possible_xray_names:
+                xray_candidate = vendor_dir / name
+                if xray_candidate.exists():
+                    try:
+                        xray_candidate.rename(xray_expected)
+                        _make_executable(xray_expected)
+                        print(f"Renamed {xray_candidate} to {xray_expected}")
+                        break
+                    except Exception as e:
+                        print(f"Warning: Could not rename {xray_candidate} to {xray_expected}: {e}")
+    
     try:
         tester = ConnectionTester(
             vendor_path=vendor_path,

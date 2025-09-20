@@ -80,6 +80,25 @@ jobs:
           find vendor/ -type f \( -name 'xray*' -o -name 'core_engine*' -o -name 'hysteria*' \) -exec chmod +x {} \; 2>/dev/null || echo "No xray/core_engine/hysteria files in vendor/"
           find core_engine/ -type f \( -name 'xray*' -o -name 'core_engine*' -o -name 'hysteria*' \) -exec chmod +x {} \; 2>/dev/null || echo "No xray/core_engine/hysteria files in core_engine/"
           
+          # Additional step: Ensure xray binary has the correct name for Linux
+          echo "Ensuring xray binary has correct name for Linux..."
+          if [ -f "vendor/xray" ]; then
+            mv vendor/xray vendor/xray_linux
+            chmod +x vendor/xray_linux
+            echo "Renamed xray to xray_linux"
+          elif [ -f "vendor/xray-linux-64" ]; then
+            mv vendor/xray-linux-64 vendor/xray_linux
+            chmod +x vendor/xray_linux
+            echo "Renamed xray-linux-64 to xray_linux"
+          elif [ -f "vendor/xray.linux.64" ]; then
+            mv vendor/xray.linux.64 vendor/xray_linux
+            chmod +x vendor/xray_linux
+            echo "Renamed xray.linux.64 to xray_linux"
+          else
+            echo "No xray binary found with expected names"
+            ls -la vendor/ 2>/dev/null || echo "vendor/ directory not accessible"
+          fi
+          
           # Ensure tester executable exists with the correct name for Linux
           echo "Setting up tester executable with correct name for Linux..."
           # First, check if core_engine_linux already exists
