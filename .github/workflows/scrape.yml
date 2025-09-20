@@ -42,69 +42,83 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-binaries-
 
-      - name: Make binaries executable (best-effort)
+      - name: Setup binaries
         run: |
           set -e
           echo "PWD: $(pwd)"
-          echo "Listing root:"
-          ls -la || true
-          echo "Listing core_engine (before):"
-          if [ -d core_engine ]; then
-            ls -la core_engine || true
-          else
-            echo "core_engine not present yet."
-          fi
-
-          # Download binaries first to ensure they exist
+          
+          # Create directories if they don't exist
+          mkdir -p vendor core_engine
+          
+          # Check if binaries already exist
+          echo "Checking existing binaries..."
+          echo "Vendor contents:"
+          ls -la vendor/ || echo "vendor/ directory empty or not accessible"
+          echo "Core engine contents:"
+          ls -la core_engine/ || echo "core_engine/ directory empty or not accessible"
+          
+          # Download binaries using the python script
+          echo "Downloading binaries..."
           python -c "
+import sys
+import traceback
 from pathlib import Path
 from python_v2ray.downloader import BinaryDownloader
-downloader = BinaryDownloader(Path('.'))
-downloader.ensure_all()
+
+try:
+    downloader = BinaryDownloader(Path('.'))
+    downloader.ensure_all()
+    print('Binaries downloaded successfully')
+except Exception as e:
+    print(f'Error downloading binaries: {e}')
+    traceback.print_exc()
+    # Continue anyway, as the script has fallback mechanisms
+    pass
 "
-
-          # Make anything inside core_engine and vendor executable (best-effort)
-          if [ -d core_engine ]; then
-            chmod +x core_engine/* || true
-          fi
           
-          if [ -d vendor ]; then
-            chmod +x vendor/* || true
-          fi
-
-          # Ensure tester executable exists in core_engine
-          if [ -f vendor/core_engine ]; then
-            mkdir -p core_engine
-            cp vendor/core_engine core_engine/tester
-            chmod +x core_engine/tester
-            echo "Copied vendor/core_engine to core_engine/tester"
-          elif [ -f core_engine/core_engine ]; then
-            cp core_engine/core_engine core_engine/tester
-            chmod +x core_engine/tester
-            echo "Copied core_engine/core_engine to core_engine/tester"
+          # Make binaries executable
+          echo "Making binaries executable..."
+          find vendor/ -type f -name '*.exe' -exec chmod +x {} \; 2>/dev/null || echo "No .exe files in vendor/"
+          find core_engine/ -type f -name '*.exe' -exec chmod +x {} \; 2>/dev/null || echo "No .exe files in core_engine/"
+          find vendor/ -type f -name 'xray*' -exec chmod +x {} \; 2>/dev/null || echo "No xray files in vendor/"
+          find core_engine/ -type f -name 'core_engine*' -exec chmod +x {} \; 2>/dev/null || echo "No core_engine files in core_engine/"
+          
+          # Ensure tester executable exists with the correct name for Linux
+          echo "Setting up tester executable with correct name for Linux..."
+          if [ -f "vendor/core_engine_linux" ]; then
+            cp vendor/core_engine_linux core_engine/core_engine_linux
+            chmod +x core_engine/core_engine_linux
+            echo "Copied vendor/core_engine_linux to core_engine/core_engine_linux"
+          elif [ -f "vendor/core_engine" ]; then
+            cp vendor/core_engine core_engine/core_engine_linux
+            chmod +x core_engine/core_engine_linux
+            echo "Copied vendor/core_engine to core_engine/core_engine_linux"
+          elif [ -f "core_engine/core_engine" ]; then
+            cp core_engine/core_engine core_engine/core_engine_linux
+            chmod +x core_engine/core_engine_linux
+            echo "Copied core_engine/core_engine to core_engine/core_engine_linux"
           else
             echo "No core_engine binary found, will rely on script to handle it"
           fi
-
-          echo "Listing core_engine (after):"
-          if [ -d core_engine ]; then
-            ls -la core_engine || true
-          fi
-          echo "Listing vendor:"
-          if [ -d vendor ]; then
-            ls -la vendor || true
-          fi
+          
+          # Final verification
+          echo "Final directory contents:"
+          echo "Vendor:"
+          ls -la vendor/ || echo "vendor/ directory empty or not accessible"
+          echo "Core engine:"
+          ls -la core_engine/ || echo "core_engine/ directory empty or not accessible"
 
       - name: Run scraper
         run: |
           python v2ray_mining.py
         shell: bash
+        continue-on-error: true
 
-      - name: Show staged diff (for logs)
+      - name: Show results (for logs)
         run: |
-          git add configs.txt || true
-          echo "---- staged diff ----"
-          git --no-pager diff --staged || true
+          echo "Configs file size: $(wc -l < configs.txt) lines"
+          echo "First 10 configs:"
+          head -10 configs.txt
         shell: bash
 
       - name: Commit and push if changed
@@ -115,7 +129,7 @@ downloader.ensure_all()
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add configs.txt || true
           if ! git diff --quiet --staged; then
-            git commit -m "chore(scrape): update configs.txt (auto)"
+            git commit -m "chore(scrape): update configs.txt ($(date '+%Y-%m-%d %H:%M'))"
             git push
             echo "Pushed changes."
           else

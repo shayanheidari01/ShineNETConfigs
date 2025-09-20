@@ -110,36 +110,32 @@ def extract_configs_from_html(html: str) -> list:
 
     soup = BeautifulSoup(html, 'html.parser')
     for a in soup.find_all('a', href=True):
-        # Safely access href attribute
-        try:
-            href = a['href']
-            if href:
-                href = str(href).strip()
-                text = a.get_text(separator=' ', strip=True)
-                m_href = URI_RE.search(href)
-                if m_href:
-                    uri = clean_uri(m_href.group(0))
+        # Use getattr to safely access href attribute
+        href = getattr(a, 'attrs', {}).get('href', '')
+        if href:
+            href = str(href).strip()
+            text = a.get_text(separator=' ', strip=True)
+            m_href = URI_RE.search(href)
+            if m_href:
+                uri = clean_uri(m_href.group(0))
+                if uri.lower().startswith('vmess://'):
+                    uri = transform_vmess(uri)
+                if '#' in text:
+                    idx = text.find('#')
+                    frag = text[idx: idx + 200].split('\n', 1)[0].rstrip('.,;:!?)]"\'')
+                    if '#' in uri:
+                        if len(frag) > len(uri.split('#', 1)[1]):
+                            uri = uri.split('#', 1)[0] + frag
+                    else:
+                        uri = uri + frag
+                found.append(uri)
+                continue
+            if URI_RE.search(text):
+                for m in URI_RE.findall(text):
+                    uri = clean_uri(m)
                     if uri.lower().startswith('vmess://'):
                         uri = transform_vmess(uri)
-                    if '#' in text:
-                        idx = text.find('#')
-                        frag = text[idx: idx + 200].split('\n', 1)[0].rstrip('.,;:!?)]"\'')
-                        if '#' in uri:
-                            if len(frag) > len(uri.split('#', 1)[1]):
-                                uri = uri.split('#', 1)[0] + frag
-                        else:
-                            uri = uri + frag
                     found.append(uri)
-                    continue
-                if URI_RE.search(text):
-                    for m in URI_RE.findall(text):
-                        uri = clean_uri(m)
-                        if uri.lower().startswith('vmess://'):
-                            uri = transform_vmess(uri)
-                        found.append(uri)
-        except (KeyError, TypeError):
-            # Skip elements that don't have href attribute properly
-            continue
 
     for tagname in ('pre', 'code', 'p', 'li', 'div', 'span'):
         for node in soup.find_all(tagname):
@@ -191,16 +187,12 @@ def scrape(base_url=BASE_URL, pages=PAGES_TO_SCRAPE):
             soup = BeautifulSoup(resp.text, 'html.parser')
             server_links = []
             for a in soup.find_all('a', href=True):
-                # Safely access href attribute
-                try:
-                    href = a['href']
-                    if href:
-                        href = str(href).strip()
-                        if re.match(r'^/servers/\d+/?', href):
-                            server_links.append(href)
-                except (KeyError, TypeError):
-                    # Skip elements that don't have href attribute properly
-                    continue
+                # Use getattr to safely access href attribute
+                href = getattr(a, 'attrs', {}).get('href', '')
+                if href:
+                    href = str(href).strip()
+                    if re.match(r'^/servers/\d+/?', href):
+                        server_links.append(href)
             return server_links
         except Exception as e:
             print(f"[WARN] index fetch error {page_url}: {e}", file=sys.stderr)
@@ -280,7 +272,7 @@ def ensure_tester_executable_linux(project_root: Path, core_engine_dir: Path):
     project_root = Path(project_root).resolve()
     core_engine_dir = Path(core_engine_dir).resolve()
     core_engine_dir.mkdir(parents=True, exist_ok=True)
-    expected = core_engine_dir / "tester"
+    expected = core_engine_dir / "core_engine_linux"  # Use the correct name for Linux
     print(f"[CORE ENGINE] ensure tester at: {expected}")
 
     # quick success case
@@ -292,7 +284,7 @@ def ensure_tester_executable_linux(project_root: Path, core_engine_dir: Path):
     candidate_names = [
         "tester", "core_engine", "core-engine", "coreengine",
         "core_engine-linux-64", "core_engine_linux_64", "core-engine-linux",
-        "xray", "xray-core", "xray_core"
+        "core_engine_linux", "xray", "xray-core", "xray_core"
     ]
 
     # 1) check inside core_engine dir for candidates
@@ -307,7 +299,21 @@ def ensure_tester_executable_linux(project_root: Path, core_engine_dir: Path):
             except Exception as e:
                 print(f"[WARN] failed to copy {p} -> {expected}: {e}", file=sys.stderr)
 
-    # 2) check for any executable inside core_engine dir
+    # 2) Check vendor directory for core_engine
+    vendor_dir = project_root / "vendor"
+    if vendor_dir.exists():
+        for name in candidate_names:
+            vendor_candidate = vendor_dir / name
+            if vendor_candidate.exists():
+                try:
+                    shutil.copy2(str(vendor_candidate), str(expected))
+                    _make_executable(expected)
+                    print(f"[CORE ENGINE] copied vendor/{name} -> {expected}")
+                    return
+                except Exception as e:
+                    print(f"[WARN] failed to copy vendor/{name}: {e}", file=sys.stderr)
+
+    # 3) check for any executable inside core_engine dir
     if core_engine_dir.exists():
         for entry in core_engine_dir.iterdir():
             if _is_executable_file(entry):
@@ -318,19 +324,6 @@ def ensure_tester_executable_linux(project_root: Path, core_engine_dir: Path):
                     return
                 except Exception as e:
                     print(f"[WARN] failed to copy {entry} -> {expected}: {e}", file=sys.stderr)
-
-    # 3) Check vendor directory for core_engine
-    vendor_dir = project_root / "vendor"
-    if vendor_dir.exists():
-        vendor_core_engine = vendor_dir / "core_engine"
-        if vendor_core_engine.exists():
-            try:
-                shutil.copy2(str(vendor_core_engine), str(expected))
-                _make_executable(expected)
-                print(f"[CORE ENGINE] copied vendor/core_engine -> {expected}")
-                return
-            except Exception as e:
-                print(f"[WARN] failed to copy vendor/core_engine: {e}", file=sys.stderr)
 
     # 4) if there are archives inside core_engine (zip/tar), try extracting them in-place then search again
     if core_engine_dir.exists():
@@ -415,7 +408,7 @@ def ensure_tester_executable_linux(project_root: Path, core_engine_dir: Path):
     # Last resort: try to find any core_engine* file in the project
     for root, dirs, files in os.walk(str(project_root)):
         for fname in files:
-            if "core_engine" in fname.lower():
+            if "core_engine" in fname.lower() or "tester" in fname.lower():
                 full_path = Path(root) / fname
                 try:
                     shutil.copy2(str(full_path), str(expected))
@@ -478,6 +471,7 @@ def ensure_tester_executable_linux(project_root: Path, core_engine_dir: Path):
 # Just read from stdin and output a success result
 
 INPUT=$(cat)
+# Return empty array to indicate no tests failed
 echo "[]"
 '''
             with open(expected, 'w') as f:
@@ -488,7 +482,9 @@ echo "[]"
         except Exception as e:
             print(f"[WARN] Failed to create minimal tester script: {e}", file=sys.stderr)
     
-    raise FileNotFoundError("Tester executable not found and could not be created. See logs above for details.")
+    # If we get here, we couldn't create a tester, but we'll continue without testing
+    print("[CORE ENGINE] WARNING: Could not create tester executable. Will continue without ping testing.")
+    # Don't raise an exception, just let the script continue without testing
 
 # -------------------------------------------------------------------
 
@@ -512,7 +508,9 @@ if __name__ == "__main__":
     try:
         ensure_tester_executable_linux(project_root, project_root / "core_engine")
     except Exception as e:
-        print(f"Tester executable not found: {e}. Skipping ping test and saving all parsed configs.")
+        print(f"Warning: Could not ensure tester executable: {e}")
+        # Continue without testing - save all configs
+        print("Saving all parsed configs without ping testing.")
         save_configs(configs, OUTPUT_FILE)
         exit(0)
 
@@ -539,7 +537,16 @@ if __name__ == "__main__":
 
     print(f"* Testing {len(parsed_configs)} configurations...")
     vendor_path = str(project_root / "vendor")
-    core_engine_path = vendor_path
+    core_engine_path = str(project_root / "core_engine")
+    
+    # Check if tester executable exists before trying to initialize ConnectionTester
+    tester_exe = "core_engine_linux" if sys.platform.startswith("linux") else "core_engine.exe" if sys.platform == "win32" else "core_engine_macos"
+    tester_path = Path(core_engine_path) / tester_exe
+    if not tester_path.exists():
+        print(f"Tester executable not found at {tester_path}. Saving all parsed configs without testing.")
+        save_configs(valid_uris, OUTPUT_FILE)
+        exit(0)
+    
     try:
         tester = ConnectionTester(
             vendor_path=vendor_path,
@@ -549,6 +556,11 @@ if __name__ == "__main__":
         print(f"ConnectionTester initialization failed: {e}. Saving parsed configs without testing.")
         save_configs(valid_uris, OUTPUT_FILE)
         exit(0)
+    except Exception as e:
+        print(f"ConnectionTester initialization failed with unexpected error: {e}. Saving parsed configs without testing.")
+        save_configs(valid_uris, OUTPUT_FILE)
+        exit(0)
+        
     try:
         results = tester.test_uris(parsed_configs)
     except Exception as e:

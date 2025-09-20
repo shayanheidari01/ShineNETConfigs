@@ -26,7 +26,7 @@ The workflow runs on a schedule (every hour) and performs these steps:
 2. Sets up Python environment
 3. Installs dependencies
 4. Downloads required binaries
-5. Ensures tester executable is available
+5. Ensures tester executable is available with the correct platform-specific name
 6. Runs the scraping and testing script
 7. Commits and pushes any updates to configs.txt
 
@@ -73,6 +73,7 @@ If you encounter "Tester executable not found" errors:
 1. Ensure all binaries are downloaded properly
 2. Check that the core_engine executable exists in either vendor/ or core_engine/ directories
 3. Make sure the tester executable has proper execute permissions
+4. Verify the platform-specific naming (core_engine_linux for Linux, core_engine.exe for Windows)
 
 ## License
 
