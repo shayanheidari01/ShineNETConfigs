@@ -272,7 +272,15 @@ def ensure_tester_executable_linux(project_root: Path, core_engine_dir: Path):
     project_root = Path(project_root).resolve()
     core_engine_dir = Path(core_engine_dir).resolve()
     core_engine_dir.mkdir(parents=True, exist_ok=True)
-    expected = core_engine_dir / "core_engine_linux"  # Use the correct name for Linux
+    
+    # Use the correct name for the platform
+    if sys.platform == "win32":
+        expected = core_engine_dir / "core_engine.exe"
+    elif sys.platform == "darwin":
+        expected = core_engine_dir / "core_engine_macos"
+    else:
+        expected = core_engine_dir / "core_engine_linux"
+    
     print(f"[CORE ENGINE] ensure tester at: {expected}")
 
     # quick success case
@@ -284,7 +292,7 @@ def ensure_tester_executable_linux(project_root: Path, core_engine_dir: Path):
     candidate_names = [
         "tester", "core_engine", "core-engine", "coreengine",
         "core_engine-linux-64", "core_engine_linux_64", "core-engine-linux",
-        "core_engine_linux", "xray", "xray-core", "xray_core"
+        "core_engine_linux", "core_engine.exe", "xray", "xray-core", "xray_core"
     ]
 
     # 1) check inside core_engine dir for candidates
@@ -540,7 +548,13 @@ if __name__ == "__main__":
     core_engine_path = str(project_root / "core_engine")
     
     # Check if tester executable exists before trying to initialize ConnectionTester
-    tester_exe = "core_engine_linux" if sys.platform.startswith("linux") else "core_engine.exe" if sys.platform == "win32" else "core_engine_macos"
+    if sys.platform == "win32":
+        tester_exe = "core_engine.exe"
+    elif sys.platform == "darwin":
+        tester_exe = "core_engine_macos"
+    else:
+        tester_exe = "core_engine_linux"
+        
     tester_path = Path(core_engine_path) / tester_exe
     if not tester_path.exists():
         print(f"Tester executable not found at {tester_path}. Saving all parsed configs without testing.")

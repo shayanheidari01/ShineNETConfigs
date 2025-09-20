@@ -59,7 +59,7 @@ jobs:
           
           # Download binaries using the python script
           echo "Downloading binaries..."
-          python -c "import sys; import traceback; from pathlib import Path; from python_v2ray.downloader import BinaryDownloader; try: downloader = BinaryDownloader(Path('.')); downloader.ensure_all(); print('Binaries downloaded successfully'); except Exception as e: print(f'Error downloading binaries: {e}'); traceback.print_exc(); # Continue anyway, as the script has fallback mechanisms; pass"
+          python -c "import sys; import traceback; from pathlib import Path; from python_v2ray.downloader import BinaryDownloader; try: downloader = BinaryDownloader(Path('.')); downloader.ensure_all(); print('Binaries downloaded successfully'); except Exception as e: print(f'Error downloading binaries: {e}'); traceback.print_exc(); pass"
           
           # Make binaries executable
           echo "Making binaries executable..."
