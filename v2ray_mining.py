@@ -560,10 +560,30 @@ if __name__ == "__main__":
         tester_exe = "core_engine_linux"
         
     tester_path = Path(core_engine_path) / tester_exe
+    
+    # Additional check for fallback executable names
+    if not tester_path.exists():
+        # Try other possible names
+        possible_names = ["core_engine_linux", "core_engine", "tester"]
+        for name in possible_names:
+            fallback_path = Path(core_engine_path) / name
+            if fallback_path.exists():
+                tester_path = fallback_path
+                tester_exe = name
+                print(f"Found tester executable at fallback location: {tester_path}")
+                break
+    
     if not tester_path.exists():
         print(f"Tester executable not found at {tester_path}. Saving all parsed configs without testing.")
         save_configs(valid_uris, OUTPUT_FILE)
         exit(0)
+    
+    # Ensure the tester executable is actually executable
+    try:
+        _make_executable(tester_path)
+        print(f"Ensured tester executable permissions for {tester_path}")
+    except Exception as e:
+        print(f"Warning: Could not set executable permissions for {tester_path}: {e}")
     
     try:
         tester = ConnectionTester(
