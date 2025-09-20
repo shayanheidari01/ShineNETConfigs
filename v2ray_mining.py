@@ -286,7 +286,7 @@ def ensure_tester_executable_linux(project_root: Path, core_engine_dir: Path):
     # quick success case
     if expected.exists() and _is_executable_file(expected):
         print(f"[CORE ENGINE] tester already exists and is executable: {expected}")
-        return
+        return True
 
     # candidate names we expect after extraction or direct download
     candidate_names = [
@@ -303,7 +303,7 @@ def ensure_tester_executable_linux(project_root: Path, core_engine_dir: Path):
                 shutil.copy2(str(p), str(expected))
                 _make_executable(expected)
                 print(f"[CORE ENGINE] copied candidate {p} -> {expected}")
-                return
+                return True
             except Exception as e:
                 print(f"[WARN] failed to copy {p} -> {expected}: {e}", file=sys.stderr)
 
@@ -317,7 +317,7 @@ def ensure_tester_executable_linux(project_root: Path, core_engine_dir: Path):
                     shutil.copy2(str(vendor_candidate), str(expected))
                     _make_executable(expected)
                     print(f"[CORE ENGINE] copied vendor/{name} -> {expected}")
-                    return
+                    return True
                 except Exception as e:
                     print(f"[WARN] failed to copy vendor/{name}: {e}", file=sys.stderr)
 
@@ -329,7 +329,7 @@ def ensure_tester_executable_linux(project_root: Path, core_engine_dir: Path):
                     shutil.copy2(str(entry), str(expected))
                     _make_executable(expected)
                     print(f"[CORE ENGINE] copied executable {entry} -> {expected}")
-                    return
+                    return True
                 except Exception as e:
                     print(f"[WARN] failed to copy {entry} -> {expected}: {e}", file=sys.stderr)
 
@@ -346,7 +346,7 @@ def ensure_tester_executable_linux(project_root: Path, core_engine_dir: Path):
                                 shutil.copy2(str(sub), str(expected))
                                 _make_executable(expected)
                                 print(f"[CORE ENGINE] extracted and copied {sub} -> {expected}")
-                                return
+                                return True
                             except Exception as e:
                                 print(f"[WARN] failed to copy extracted {sub}: {e}", file=sys.stderr)
 
@@ -376,7 +376,7 @@ def ensure_tester_executable_linux(project_root: Path, core_engine_dir: Path):
                                 shutil.copy2(str(sub), str(expected))
                                 _make_executable(expected)
                                 print(f"[CORE ENGINE] extracted archive and copied {sub} -> {expected}")
-                                return
+                                return True
                             except Exception as e:
                                 print(f"[WARN] failed to copy after extract {sub}: {e}", file=sys.stderr)
                 found_archive = full
@@ -393,7 +393,7 @@ def ensure_tester_executable_linux(project_root: Path, core_engine_dir: Path):
             shutil.copy2(str(found_candidate), str(expected))
             _make_executable(expected)
             print(f"[CORE ENGINE] copied found candidate {found_candidate} -> {expected}")
-            return
+            return True
         except Exception as e:
             print(f"[WARN] failed to copy found candidate {found_candidate}: {e}", file=sys.stderr)
 
@@ -409,7 +409,7 @@ def ensure_tester_executable_linux(project_root: Path, core_engine_dir: Path):
                         shutil.copy2(str(sub), str(expected))
                         _make_executable(expected)
                         print(f"[CORE ENGINE] copied executable from tmp {sub} -> {expected}")
-                        return
+                        return True
                     except Exception as e:
                         print(f"[WARN] failed to copy from tmp {sub}: {e}", file=sys.stderr)
 
@@ -422,7 +422,7 @@ def ensure_tester_executable_linux(project_root: Path, core_engine_dir: Path):
                     shutil.copy2(str(full_path), str(expected))
                     _make_executable(expected)
                     print(f"[CORE ENGINE] copied {full_path} -> {expected}")
-                    return
+                    return True
                 except Exception as e:
                     print(f"[WARN] failed to copy {full_path}: {e}", file=sys.stderr)
 
@@ -463,7 +463,7 @@ def ensure_tester_executable_linux(project_root: Path, core_engine_dir: Path):
                         shutil.copy2(str(full_path), str(expected))
                         _make_executable(expected)
                         print(f"[CORE ENGINE] copied from package {full_path} -> {expected}")
-                        return
+                        return True
                     except Exception as e:
                         print(f"[WARN] failed to copy from package {full_path}: {e}", file=sys.stderr)
     except Exception as e:
@@ -486,13 +486,13 @@ echo "[]"
                 f.write(tester_script)
             _make_executable(expected)
             print(f"[CORE ENGINE] Created minimal tester script at {expected}")
-            return
+            return True
         except Exception as e:
             print(f"[WARN] Failed to create minimal tester script: {e}", file=sys.stderr)
     
-    # If we get here, we couldn't create a tester, but we'll continue without testing
-    print("[CORE ENGINE] WARNING: Could not create tester executable. Will continue without ping testing.")
-    # Don't raise an exception, just let the script continue without testing
+    # If we get here, we couldn't create a tester
+    print("[CORE ENGINE] WARNING: Could not create tester executable.")
+    return False
 
 # -------------------------------------------------------------------
 
@@ -514,7 +514,11 @@ if __name__ == "__main__":
 
     # ensure 'tester' exists (robust, linux-focused)
     try:
-        ensure_tester_executable_linux(project_root, project_root / "core_engine")
+        tester_created = ensure_tester_executable_linux(project_root, project_root / "core_engine")
+        if not tester_created:
+            print("Could not ensure tester executable. Saving all parsed configs without testing.")
+            save_configs(configs, OUTPUT_FILE)
+            exit(0)
     except Exception as e:
         print(f"Warning: Could not ensure tester executable: {e}")
         # Continue without testing - save all configs

@@ -59,29 +59,33 @@ jobs:
           
           # Download binaries using the python script
           echo "Downloading binaries..."
-          python -c "import sys; import traceback; from pathlib import Path; from python_v2ray.downloader import BinaryDownloader; try: downloader = BinaryDownloader(Path('.')); downloader.ensure_all(); print('Binaries downloaded successfully'); except Exception as e: print(f'Error downloading binaries: {e}'); traceback.print_exc(); pass"
+          python -c "import sys; import traceback; from pathlib import Path; from python_v2ray.downloader import BinaryDownloader; try: downloader = BinaryDownloader(Path('.')); downloader.ensure_all(); print('Binaries downloaded successfully'); except Exception as e: print('Error downloading binaries: ' + str(e)); traceback.print_exc()"
           
           # Make binaries executable
           echo "Making binaries executable..."
           find vendor/ -type f -name '*.exe' -exec chmod +x {} \; 2>/dev/null || echo "No .exe files in vendor/"
           find core_engine/ -type f -name '*.exe' -exec chmod +x {} \; 2>/dev/null || echo "No .exe files in core_engine/"
-          find vendor/ -type f -name 'xray*' -exec chmod +x {} \; 2>/dev/null || echo "No xray files in vendor/"
-          find core_engine/ -type f -name 'core_engine*' -exec chmod +x {} \; 2>/dev/null || echo "No core_engine files in core_engine/"
+          find vendor/ -type f \( -name 'xray*' -o -name 'core_engine*' -o -name 'hysteria*' \) -exec chmod +x {} \; 2>/dev/null || echo "No xray/core_engine/hysteria files in vendor/"
+          find core_engine/ -type f \( -name 'xray*' -o -name 'core_engine*' -o -name 'hysteria*' \) -exec chmod +x {} \; 2>/dev/null || echo "No xray/core_engine/hysteria files in core_engine/"
           
           # Ensure tester executable exists with the correct name for Linux
           echo "Setting up tester executable with correct name for Linux..."
-          if [ -f "vendor/core_engine_linux" ]; then
-            cp vendor/core_engine_linux core_engine/core_engine_linux
+          if [ -f "core_engine/core_engine" ]; then
+            cp core_engine/core_engine core_engine/core_engine_linux
             chmod +x core_engine/core_engine_linux
-            echo "Copied vendor/core_engine_linux to core_engine/core_engine_linux"
+            echo "Copied core_engine/core_engine to core_engine/core_engine_linux"
+          elif [ -f "core_engine/core_engine.exe" ]; then
+            cp core_engine/core_engine.exe core_engine/core_engine_linux
+            chmod +x core_engine/core_engine_linux
+            echo "Copied core_engine/core_engine.exe to core_engine/core_engine_linux"
           elif [ -f "vendor/core_engine" ]; then
             cp vendor/core_engine core_engine/core_engine_linux
             chmod +x core_engine/core_engine_linux
             echo "Copied vendor/core_engine to core_engine/core_engine_linux"
-          elif [ -f "core_engine/core_engine" ]; then
-            cp core_engine/core_engine core_engine/core_engine_linux
+          elif [ -f "vendor/core_engine.exe" ]; then
+            cp vendor/core_engine.exe core_engine/core_engine_linux
             chmod +x core_engine/core_engine_linux
-            echo "Copied core_engine/core_engine to core_engine/core_engine_linux"
+            echo "Copied vendor/core_engine.exe to core_engine/core_engine_linux"
           else
             echo "No core_engine binary found, will rely on script to handle it"
           fi
@@ -92,6 +96,12 @@ jobs:
           ls -la vendor/ || echo "vendor/ directory empty or not accessible"
           echo "Core engine:"
           ls -la core_engine/ || echo "core_engine/ directory empty or not accessible"
+          
+          # Make sure core_engine_linux is executable
+          if [ -f "core_engine/core_engine_linux" ]; then
+            chmod +x core_engine/core_engine_linux
+            echo "Made core_engine/core_engine_linux executable"
+          fi
 
       - name: Run scraper
         run: |
