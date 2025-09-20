@@ -96,12 +96,10 @@ jobs:
           else
             echo "No core_engine binary found, creating a minimal tester script"
             # Create a minimal tester script as fallback
-            cat > core_engine/core_engine_linux << 'EOF'
-#!/bin/bash
-# Minimal tester script for GitHub Actions
-# Just read from stdin and output an empty array to indicate no tests failed
-echo "[]"
-EOF
+            echo '#!/bin/bash' > core_engine/core_engine_linux
+            echo '# Minimal tester script for GitHub Actions' >> core_engine/core_engine_linux
+            echo '# Just read from stdin and output an empty array to indicate no tests failed' >> core_engine/core_engine_linux
+            echo 'echo "[]"' >> core_engine/core_engine_linux
             chmod +x core_engine/core_engine_linux
             echo "Created minimal tester script at core_engine/core_engine_linux"
           fi
