@@ -8,7 +8,7 @@ Automated V2Ray configuration scraper and tester that runs on GitHub Actions to 
 - Tests each configuration for connectivity using ping tests
 - Automatically updates the configuration list every hour
 - Only keeps configurations that pass connectivity tests
-- Uses python-v2ray library for configuration parsing and testing
+- Performs lightweight validation without external V2Ray tooling
 
 ## How It Works
 
@@ -34,8 +34,6 @@ The workflow runs on a schedule (every hour) and performs these steps:
 
 - `v2ray_mining.py` - Main scraping and testing script
 - `configs.txt` - List of working configurations (automatically updated)
-- `vendor/` - Downloaded binaries (xray, hysteria)
-- `core_engine/` - Core testing engine
 - `.github/workflows/scrape.yml` - GitHub Actions workflow
 
 ## Usage
@@ -49,13 +47,12 @@ python v2ray_mining.py
 ## Requirements
 
 - Python 3.10+
-- python-v2ray library
 - requests
 - beautifulsoup4
 
 Install dependencies:
 ```bash
-pip install requests beautifulsoup4 python-v2ray
+pip install requests beautifulsoup4
 ```
 
 ## Configuration
