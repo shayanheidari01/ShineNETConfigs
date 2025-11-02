@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
 """
-v2ray_mining.py (robust)
-Scrapes v2nodes (or other base_url) for vmess/vless/trojan/ss configs
-and writes unique results into configs.txt.
+v2ray_mining.py
 
-This variant includes a robust routine to ensure the 'tester' executable
-is present in ./core_engine (extract archives, search project, set +x, copy/rename).
-Designed to run on Linux (Ubuntu) in GitHub Actions.
+This version:
+- Scrapes sites (default v2nodes) for vmess/vless/trojan/ss URIs
+- Performs a lightweight local validation (no external packages)
+- Transforms vmess entries to normalise their 'ps' field
+- Saves unique, validated URIs into configs.txt
+
+Designed to run on Linux/Windows/Mac — no external tester required.
 """
 
 import requests
@@ -19,19 +20,8 @@ import sys
 from pathlib import Path
 import json
 import base64
-from python_v2ray.config_parser import parse_uri
-from python_v2ray.downloader import BinaryDownloader
-from python_v2ray.tester import ConnectionTester
 from concurrent.futures import ThreadPoolExecutor
-
-# extra imports for robust handling
 import os
-import stat
-import shutil
-import zipfile
-import tarfile
-import fnmatch
-import traceback
 
 # ---------------- SETTINGS ----------------
 BASE_URL = "https://www.v2nodes.com"
@@ -41,17 +31,18 @@ HEADERS = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36'
 }
 OUTPUT_FILE = Path("configs.txt")
-SLEEP_BETWEEN_REQUESTS = 0.5  # polite crawling
+SLEEP_BETWEEN_REQUESTS = 0.5  # polite crawling (not enforced here to keep things simple)
 # ------------------------------------------
 
 URI_RE = re.compile(
     r'(?:vless|vmess|trojan|ss)://'            # scheme
-    r'[^\s\'"<>()[\]{}]+'                     # body until a breaking char
+    r'[^\s\'\"<>()[\]{}]+'                     # body until a breaking char
     r'(?:#[^\n\r]{0,200})?',                  # optional fragment up to newline (max 200 chars)
     re.IGNORECASE
 )
 
 FLAG_RE = re.compile(r'[\U0001F1E6-\U0001F1FF]{2}')
+
 
 def clean_uri(uri: str) -> str:
     if not uri:
@@ -63,6 +54,7 @@ def clean_uri(uri: str) -> str:
     uri = uri.rstrip('.,;:!?)"\']')
     return uri
 
+
 def extract_flag_from_ps(ps: str) -> str:
     if not ps:
         return ""
@@ -71,7 +63,11 @@ def extract_flag_from_ps(ps: str) -> str:
         return m.group(0)
     return ps.strip()[:4]
 
+
 def transform_vmess(uri: str) -> str:
+    """Attempt to decode vmess payload, normalise 'ps' to a short flag when possible.
+    If decoding/parsing fails, return original uri unchanged.
+    """
     try:
         prefix, payload = uri.split('://', 1)
     except ValueError:
@@ -79,8 +75,11 @@ def transform_vmess(uri: str) -> str:
     if prefix.lower() != 'vmess':
         return uri
     payload = payload.strip()
+    # strip fragment for decoding
+    frag = ''
     if '#' in payload:
-        payload = payload.split('#', 1)[0]
+        payload, frag = payload.split('#', 1)
+    # pad base64
     missing_padding = len(payload) % 4
     if missing_padding:
         payload += '=' * (4 - missing_padding)
@@ -98,9 +97,56 @@ def transform_vmess(uri: str) -> str:
     try:
         new_json = json.dumps(data, ensure_ascii=False, separators=(',', ':'))
         new_b64 = base64.b64encode(new_json.encode('utf-8')).decode('utf-8')
-        return 'vmess://' + new_b64
+        return 'vmess://' + new_b64 + (('#' + frag) if frag else '')
     except Exception:
         return uri
+
+
+def validate_uri_basic(uri: str) -> bool:
+    """A lightweight validation that avoids external dependencies.
+    - vmess: try to base64-decode JSON payload
+    - vless: require '@' and ':' (basic form)
+    - trojan: check minimal length
+    - ss: accept (more complex SS parsing omitted)
+
+    This intentionally errs on the side of permissiveness (to keep
+    scraped configs) while blocking obvious garbage.
+    """
+    if not uri or '://' not in uri:
+        return False
+    scheme = uri.split('://', 1)[0].lower()
+    if scheme not in ('vmess', 'vless', 'trojan', 'ss'):
+        return False
+    if scheme == 'vmess':
+        payload = uri.split('://', 1)[1]
+        if '#' in payload:
+            payload = payload.split('#', 1)[0]
+        # ensure length looks reasonable
+        if len(payload) < 16:
+            return False
+        try:
+            missing = len(payload) % 4
+            if missing:
+                payload += '=' * (4 - missing)
+            decoded = base64.b64decode(payload)
+            # check if it looks like JSON
+            text = decoded.decode('utf-8', errors='ignore')
+            if text.strip().startswith('{') and 'ps' in text:
+                return True
+            return False
+        except Exception:
+            return False
+    if scheme == 'vless':
+        # vless typically contains user@host:port or path; basic sanity
+        return ('@' in uri and ':' in uri)
+    if scheme == 'trojan':
+        # trojan://password@host:port
+        return len(uri) > 10 and '@' in uri
+    if scheme == 'ss':
+        # many ss links are base64 payloads; accept for now
+        return len(uri) > 8
+    return False
+
 
 def extract_configs_from_html(html: str) -> list:
     found = []
@@ -111,7 +157,6 @@ def extract_configs_from_html(html: str) -> list:
 
     soup = BeautifulSoup(html, 'html.parser')
     for a in soup.find_all('a', href=True):
-        # Use getattr to safely access href attribute
         href = getattr(a, 'attrs', {}).get('href', '')
         if href:
             href = str(href).strip()
@@ -156,6 +201,7 @@ def extract_configs_from_html(html: str) -> list:
             uri = transform_vmess(uri)
         found.append(uri)
 
+    # Basic validation using validate_uri_basic
     valid_found = []
     for uri in found:
         if not uri:
@@ -163,21 +209,25 @@ def extract_configs_from_html(html: str) -> list:
         if uri.lower().startswith('vless://') and ('@' not in uri or ':' not in uri):
             continue
         try:
-            if parse_uri(uri):
+            if validate_uri_basic(uri):
                 valid_found.append(uri)
         except Exception:
+            # be forgiving
             pass
-    return valid_found
+    # preserve order and uniqueness
+    return list(dict.fromkeys(valid_found))
+
 
 def extract_from_server(server_url: str) -> list:
     try:
         resp = requests.get(server_url, headers=HEADERS, timeout=REQUEST_TIMEOUT)
         resp.raise_for_status()
         html = resp.text.replace('\r\n', '\n').replace('\r', '\n')
-        return list(dict.fromkeys(extract_configs_from_html(html)))
+        return extract_configs_from_html(html)
     except Exception as e:
         print(f"[WARN] fetch error {server_url}: {e}", file=sys.stderr)
         return []
+
 
 def scrape(base_url=BASE_URL, pages=PAGES_TO_SCRAPE):
     def fetch_page(page):
@@ -188,7 +238,6 @@ def scrape(base_url=BASE_URL, pages=PAGES_TO_SCRAPE):
             soup = BeautifulSoup(resp.text, 'html.parser')
             server_links = []
             for a in soup.find_all('a', href=True):
-                # Use getattr to safely access href attribute
                 href = getattr(a, 'attrs', {}).get('href', '')
                 if href:
                     href = str(href).strip()
@@ -228,6 +277,7 @@ def scrape(base_url=BASE_URL, pages=PAGES_TO_SCRAPE):
                 print(f"    + new: {cfg[:200]}")
     return results
 
+
 def save_configs(configs: list, out_file: Path):
     out_file.parent.mkdir(parents=True, exist_ok=True)
     text = "\n".join(configs) + ("\n" if configs else "")
@@ -236,266 +286,6 @@ def save_configs(configs: list, out_file: Path):
     tmp.replace(out_file)
     print(f"[INFO] saved {len(configs)} configs to {out_file}")
 
-# ---------------- robust tester ensuring for Linux (Ubuntu) ----------------
-def _is_executable_file(p: Path) -> bool:
-    try:
-        return p.is_file() and os.access(str(p), os.X_OK)
-    except Exception:
-        return False
-
-def _make_executable(p: Path):
-    try:
-        mode = p.stat().st_mode
-        p.chmod(mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
-    except Exception:
-        try:
-            p.chmod(0o755)
-        except Exception:
-            pass
-
-def _extract_archive(archive_path: Path, dest: Path) -> bool:
-    try:
-        if zipfile.is_zipfile(archive_path):
-            print(f"[INFO] extracting zip {archive_path} -> {dest}")
-            with zipfile.ZipFile(archive_path, 'r') as z:
-                z.extractall(dest)
-            return True
-        if tarfile.is_tarfile(archive_path):
-            print(f"[INFO] extracting tar {archive_path} -> {dest}")
-            with tarfile.open(archive_path, 'r:*') as t:
-                t.extractall(dest)
-            return True
-    except Exception as e:
-        print(f"[WARN] failed to extract {archive_path}: {e}", file=sys.stderr)
-    return False
-
-def ensure_tester_executable_linux(project_root: Path, core_engine_dir: Path):
-    project_root = Path(project_root).resolve()
-    core_engine_dir = Path(core_engine_dir).resolve()
-    core_engine_dir.mkdir(parents=True, exist_ok=True)
-    
-    # Use the correct name for the platform
-    if sys.platform == "win32":
-        expected = core_engine_dir / "core_engine.exe"
-    elif sys.platform == "darwin":
-        expected = core_engine_dir / "core_engine_macos"
-    else:
-        expected = core_engine_dir / "core_engine_linux"
-    
-    print(f"[CORE ENGINE] ensure tester at: {expected}")
-
-    # quick success case
-    if expected.exists() and _is_executable_file(expected):
-        print(f"[CORE ENGINE] tester already exists and is executable: {expected}")
-        return True
-
-    # candidate names we expect after extraction or direct download
-    candidate_names = [
-        "tester", "core_engine", "core-engine", "coreengine",
-        "core_engine-linux-64", "core_engine_linux_64", "core-engine-linux",
-        "core_engine_linux", "core_engine.exe", "xray", "xray-core", "xray_core"
-    ]
-
-    # 1) check inside core_engine dir for candidates
-    for name in candidate_names:
-        p = core_engine_dir / name
-        if p.exists():
-            try:
-                shutil.copy2(str(p), str(expected))
-                _make_executable(expected)
-                print(f"[CORE ENGINE] copied candidate {p} -> {expected}")
-                return True
-            except Exception as e:
-                print(f"[WARN] failed to copy {p} -> {expected}: {e}", file=sys.stderr)
-
-    # 2) Check vendor directory for core_engine
-    vendor_dir = project_root / "vendor"
-    if vendor_dir.exists():
-        for name in candidate_names:
-            vendor_candidate = vendor_dir / name
-            if vendor_candidate.exists():
-                try:
-                    shutil.copy2(str(vendor_candidate), str(expected))
-                    _make_executable(expected)
-                    print(f"[CORE ENGINE] copied vendor/{name} -> {expected}")
-                    return True
-                except Exception as e:
-                    print(f"[WARN] failed to copy vendor/{name}: {e}", file=sys.stderr)
-
-    # 3) check for any executable inside core_engine dir
-    if core_engine_dir.exists():
-        for entry in core_engine_dir.iterdir():
-            if _is_executable_file(entry):
-                try:
-                    shutil.copy2(str(entry), str(expected))
-                    _make_executable(expected)
-                    print(f"[CORE ENGINE] copied executable {entry} -> {expected}")
-                    return True
-                except Exception as e:
-                    print(f"[WARN] failed to copy {entry} -> {expected}: {e}", file=sys.stderr)
-
-    # 4) if there are archives inside core_engine (zip/tar), try extracting them in-place then search again
-    if core_engine_dir.exists():
-        for entry in core_engine_dir.iterdir():
-            if entry.is_file() and entry.suffix.lower() in ('.zip', '.gz', '.tgz', '.tar'):
-                print(f"[CORE ENGINE] found archive inside core_engine: {entry}, trying extract")
-                if _extract_archive(entry, core_engine_dir):
-                    # attempt to find executables again
-                    for sub in core_engine_dir.rglob("*"):
-                        if _is_executable_file(sub):
-                            try:
-                                shutil.copy2(str(sub), str(expected))
-                                _make_executable(expected)
-                                print(f"[CORE ENGINE] extracted and copied {sub} -> {expected}")
-                                return True
-                            except Exception as e:
-                                print(f"[WARN] failed to copy extracted {sub}: {e}", file=sys.stderr)
-
-    # 5) Deep search project_root (depth limited) for candidate files or archives
-    print("[CORE ENGINE] deep searching project tree for candidates or archives (depth <= 4)...")
-    max_depth = 4
-    found_archive = None
-    found_candidate = None
-    for root, dirs, files in os.walk(str(project_root)):
-        # compute depth
-        rel = Path(root).relative_to(project_root)
-        if len(rel.parts) > max_depth:
-            dirs[:] = []
-            continue
-        for fname in files:
-            lower = fname.lower()
-            full = Path(root) / fname
-            # archive candidate
-            if lower.endswith(('.zip', '.tar.gz', '.tgz', '.tar')):
-                print(f"[CORE ENGINE] found archive: {full}")
-                # try extract into core_engine_dir
-                if _extract_archive(full, core_engine_dir):
-                    # after extraction try to find executables
-                    for sub in core_engine_dir.rglob("*"):
-                        if _is_executable_file(sub):
-                            try:
-                                shutil.copy2(str(sub), str(expected))
-                                _make_executable(expected)
-                                print(f"[CORE ENGINE] extracted archive and copied {sub} -> {expected}")
-                                return True
-                            except Exception as e:
-                                print(f"[WARN] failed to copy after extract {sub}: {e}", file=sys.stderr)
-                found_archive = full
-            # binary candidate by name patterns
-            if any(fnmatch.fnmatch(lower, pat) for pat in ("*core*", "*engine*", "xray*", "tester*")):
-                print(f"[CORE ENGINE] found candidate file anywhere: {full}")
-                found_candidate = full
-                break
-        if found_candidate:
-            break
-
-    if found_candidate:
-        try:
-            shutil.copy2(str(found_candidate), str(expected))
-            _make_executable(expected)
-            print(f"[CORE ENGINE] copied found candidate {found_candidate} -> {expected}")
-            return True
-        except Exception as e:
-            print(f"[WARN] failed to copy found candidate {found_candidate}: {e}", file=sys.stderr)
-
-    # fallback: if we found an archive earlier, try extracting into a temporary folder and search
-    if found_archive:
-        tmpdir = core_engine_dir / "tmp_extracted"
-        tmpdir.mkdir(parents=True, exist_ok=True)
-        print(f"[CORE ENGINE] fallback: extracting {found_archive} into tmp {tmpdir}")
-        if _extract_archive(found_archive, tmpdir):
-            for sub in tmpdir.rglob("*"):
-                if _is_executable_file(sub):
-                    try:
-                        shutil.copy2(str(sub), str(expected))
-                        _make_executable(expected)
-                        print(f"[CORE ENGINE] copied executable from tmp {sub} -> {expected}")
-                        return True
-                    except Exception as e:
-                        print(f"[WARN] failed to copy from tmp {sub}: {e}", file=sys.stderr)
-
-    # Last resort: try to find any core_engine* file in the project
-    for root, dirs, files in os.walk(str(project_root)):
-        for fname in files:
-            if "core_engine" in fname.lower() or "tester" in fname.lower():
-                full_path = Path(root) / fname
-                try:
-                    shutil.copy2(str(full_path), str(expected))
-                    _make_executable(expected)
-                    print(f"[CORE ENGINE] copied {full_path} -> {expected}")
-                    return True
-                except Exception as e:
-                    print(f"[WARN] failed to copy {full_path}: {e}", file=sys.stderr)
-
-    # nothing worked - print helpful debug info
-    print("[CORE ENGINE] DEBUG: Could not find tester executable. Listing relevant dirs:")
-    try:
-        print("Project root top-level:")
-        for p in project_root.iterdir():
-            print(" -", p, "(dir)" if p.is_dir() else "(file)")
-    except Exception:
-        pass
-    try:
-        print("core_engine contents:")
-        if core_engine_dir.exists():
-            for p in core_engine_dir.rglob("*"):
-                try:
-                    st = p.stat()
-                    flags = "x" if os.access(str(p), os.X_OK) else "-"
-                    print(f" - {p} ({'dir' if p.is_dir() else 'file'}) size={st.st_size} exec={flags}")
-                except Exception:
-                    print(" -", p)
-        else:
-            print(" core_engine does not exist")
-    except Exception:
-        pass
-
-    # Instead of raising an error, let's try one final approach
-    # Check if we can find the tester in the python_v2ray package itself
-    try:
-        import python_v2ray
-        pkg_dir = Path(python_v2ray.__file__).parent
-        print(f"[CORE ENGINE] Looking in python_v2ray package: {pkg_dir}")
-        for root, dirs, files in os.walk(str(pkg_dir)):
-            for fname in files:
-                if "core_engine" in fname.lower() or "tester" in fname.lower():
-                    full_path = Path(root) / fname
-                    try:
-                        shutil.copy2(str(full_path), str(expected))
-                        _make_executable(expected)
-                        print(f"[CORE ENGINE] copied from package {full_path} -> {expected}")
-                        return True
-                    except Exception as e:
-                        print(f"[WARN] failed to copy from package {full_path}: {e}", file=sys.stderr)
-    except Exception as e:
-        print(f"[WARN] Could not search python_v2ray package: {e}", file=sys.stderr)
-
-    # Final fallback - create a simple tester script if we're in GitHub Actions
-    if os.environ.get('GITHUB_ACTIONS') == 'true':
-        print("[CORE ENGINE] Creating a minimal tester script for GitHub Actions")
-        try:
-            # Create a minimal tester script that just returns success
-            tester_script = '''#!/bin/bash
-# Minimal tester script for GitHub Actions
-# Just read from stdin and output a success result
-
-INPUT=$(cat)
-# Return empty array to indicate no tests failed
-echo "[]"
-'''
-            with open(expected, 'w') as f:
-                f.write(tester_script)
-            _make_executable(expected)
-            print(f"[CORE ENGINE] Created minimal tester script at {expected}")
-            return True
-        except Exception as e:
-            print(f"[WARN] Failed to create minimal tester script: {e}", file=sys.stderr)
-    
-    # If we get here, we couldn't create a tester
-    print("[CORE ENGINE] WARNING: Could not create tester executable.")
-    return False
-
-# -------------------------------------------------------------------
 
 if __name__ == "__main__":
     configs = scrape()
@@ -503,128 +293,21 @@ if __name__ == "__main__":
         print("No configs found from scraping.")
         exit(0)
 
-    project_root = Path(".").resolve()
-    print("--- Verifying binaries ---")
-    try:
-        downloader = BinaryDownloader(project_root)
-        downloader.ensure_all()
-    except Exception as e:
-        print(f"Fatal Error during downloader.ensure_all(): {e}")
-        traceback.print_exc()
-        exit(1)
-
-    # ensure 'tester' exists (robust, linux-focused)
-    try:
-        tester_created = ensure_tester_executable_linux(project_root, project_root / "core_engine")
-        if not tester_created:
-            print("Could not ensure tester executable. Saving all parsed configs without testing.")
-            save_configs(configs, OUTPUT_FILE)
-            exit(0)
-    except Exception as e:
-        print(f"Warning: Could not ensure tester executable: {e}")
-        # Continue without testing - save all configs
-        print("Saving all parsed configs without ping testing.")
-        save_configs(configs, OUTPUT_FILE)
-        exit(0)
-
-    print("\n* Parsing URIs...")
-    parsed_configs = []
-    valid_uris = []
+    # Final dedupe + basic validation pass before saving results.
+    unique = []
+    seen = set()
     for uri in configs:
+        if uri in seen:
+            continue
+        seen.add(uri)
+        # Filter out 'reality' entries without spx= (same as original intent)
         if 'reality' in uri.lower() and 'spx=' not in uri:
             continue
-        try:
-            p = parse_uri(uri)
-            if p:
-                if hasattr(p, 'tag'):
-                    p.tag = f"config_{len(parsed_configs)}"
-                elif isinstance(p, dict) and 'tag' in p:
-                    p['tag'] = f"config_{len(parsed_configs)}"
-                parsed_configs.append(p)
-                valid_uris.append(uri)
-        except Exception:
-            pass
-    if not parsed_configs:
-        print("No valid configurations found after parsing.")
+        unique.append(uri)
+
+    if not unique:
+        print("No valid configurations found after basic filtering.")
         exit(0)
 
-    print(f"* Testing {len(parsed_configs)} configurations...")
-    vendor_path = str(project_root / "vendor")
-    core_engine_path = str(project_root / "core_engine")
-    
-    # Check if tester executable exists before trying to initialize ConnectionTester
-    if sys.platform == "win32":
-        tester_exe = "core_engine.exe"
-    elif sys.platform == "darwin":
-        tester_exe = "core_engine_macos"
-    else:
-        tester_exe = "core_engine_linux"
-        
-    tester_path = Path(core_engine_path) / tester_exe
-    
-    # Additional check for fallback executable names
-    if not tester_path.exists():
-        # Try other possible names
-        possible_names = ["core_engine_linux", "core_engine", "tester"]
-        for name in possible_names:
-            fallback_path = Path(core_engine_path) / name
-            if fallback_path.exists():
-                tester_path = fallback_path
-                tester_exe = name
-                print(f"Found tester executable at fallback location: {tester_path}")
-                break
-    
-    if not tester_path.exists():
-        print(f"Tester executable not found at {tester_path}. Saving all parsed configs without testing.")
-        save_configs(valid_uris, OUTPUT_FILE)
-        exit(0)
-    
-    # Ensure the tester executable is actually executable
-    try:
-        _make_executable(tester_path)
-        print(f"Ensured tester executable permissions for {tester_path}")
-    except Exception as e:
-        print(f"Warning: Could not set executable permissions for {tester_path}: {e}")
-    
-    # Ensure xray binary has the correct name for Linux
-    if sys.platform != "win32" and sys.platform != "darwin":
-        vendor_dir = Path(vendor_path)
-        xray_expected = vendor_dir / "xray_linux"
-        if not xray_expected.exists():
-            # Look for other possible xray binary names
-            possible_xray_names = ["xray", "xray-linux-64", "xray.linux.64", "xray_linux"]
-            for name in possible_xray_names:
-                xray_candidate = vendor_dir / name
-                if xray_candidate.exists():
-                    try:
-                        xray_candidate.rename(xray_expected)
-                        _make_executable(xray_expected)
-                        print(f"Renamed {xray_candidate} to {xray_expected}")
-                        break
-                    except Exception as e:
-                        print(f"Warning: Could not rename {xray_candidate} to {xray_expected}: {e}")
-    
-    try:
-        tester = ConnectionTester(
-            vendor_path=vendor_path,
-            core_engine_path=core_engine_path
-        )
-    except FileNotFoundError as e:
-        print(f"ConnectionTester initialization failed: {e}. Saving parsed configs without testing.")
-        save_configs(valid_uris, OUTPUT_FILE)
-        exit(0)
-    except Exception as e:
-        print(f"ConnectionTester initialization failed with unexpected error: {e}. Saving parsed configs without testing.")
-        save_configs(valid_uris, OUTPUT_FILE)
-        exit(0)
-        
-    try:
-        results = tester.test_uris(parsed_configs)
-    except Exception as e:
-        print(f"Testing failed: {e}. Saving all parsed configs without ping test.")
-        save_configs(valid_uris, OUTPUT_FILE)
-        exit(0)
-
-    valid_configs = [uri for uri, result in zip(valid_uris, results) if result.get('status') == 'success']
-    print(f"* After testing, {len(valid_configs)} valid configs with ping.")
-    save_configs(valid_configs, OUTPUT_FILE)
+    save_configs(unique, OUTPUT_FILE)
+    print("Done.")
