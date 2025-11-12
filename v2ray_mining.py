@@ -25,7 +25,7 @@ import os
 
 # ---------------- SETTINGS ----------------
 BASE_URL = "https://www.v2nodes.com"
-PAGES_TO_SCRAPE = 5
+PAGES_TO_SCRAPE = 1
 REQUEST_TIMEOUT = 12
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36'
