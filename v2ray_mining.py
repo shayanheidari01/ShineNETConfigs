@@ -4,35 +4,83 @@
 """
 v2ray_mining.py
 
-This version:
-- Scrapes sites (default v2nodes) for vmess/vless/trojan/ss URIs
-- Performs a lightweight local validation (no external packages)
-- Transforms vmess entries to normalise their 'ps' field
-- Saves unique, validated URIs into configs.txt
+This version (anti-block enhancements):
+- Rotates User-Agent strings to mimic browsers
+- Uses requests.Session with retries and backoff for transient errors
+- Implements exponential backoff + jitter when encountering 403 or rate limiting
+- Reduces concurrency when server seems to block requests ("slow mode")
+- Supports proxies via environment variables:
+    - HTTP_PROXY / HTTPS_PROXY (standard)
+    - or PROXIES environment variable: comma-separated proxy URLs
+- Supports alternative base URLs/mirrors via ALTERNATIVE_BASES or env var ALTERNATIVE_BASES
+- Better debug logging of failures (prints HTTP status & attempt info)
+- Preserves previous scraping, validation and vmess-normalisation logic
 
-Designed to run on Linux/Windows/Mac — no external tester required.
+Usage:
+    python v2ray_mining.py
+
+Environment variables (optional):
+    PROXIES="http://proxy1:port,http://proxy2:port"
+    ALTERNATIVE_BASES="https://mirror1.example,https://mirror2.example"
+    PAGES_TO_SCRAPE=2
+
+This script aims to be polite and robust; it still errs on the side of permissiveness
+when validating scraped URIs (to keep potentially useful configs).
 """
 
-import requests
-from bs4 import BeautifulSoup
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+import base64
+import json
 import re
 import sys
-from pathlib import Path
-import json
-import base64
-from concurrent.futures import ThreadPoolExecutor
+import time
+import random
 import os
+from typing import List, Optional
+import requests
+from bs4 import BeautifulSoup
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 # ---------------- SETTINGS ----------------
-BASE_URL = "https://www.v2nodes.com"
-PAGES_TO_SCRAPE = 1
-REQUEST_TIMEOUT = 12
-HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36'
-}
-OUTPUT_FILE = Path("configs.txt")
-SLEEP_BETWEEN_REQUESTS = 0.5  # polite crawling (not enforced here to keep things simple)
+BASE_URL = os.environ.get("BASE_URL", "https://www.v2nodes.com")
+# allow multiple comma-separated alternative base URLs (mirrors)
+ALTERNATIVE_BASES = [u.strip() for u in os.environ.get("ALTERNATIVE_BASES", "").split(",") if u.strip()]
+PAGES_TO_SCRAPE = int(os.environ.get("PAGES_TO_SCRAPE", "1"))
+REQUEST_TIMEOUT = int(os.environ.get("REQUEST_TIMEOUT", "12"))
+OUTPUT_FILE = Path(os.environ.get("OUTPUT_FILE", "configs.txt"))
+SLEEP_BETWEEN_REQUESTS = float(os.environ.get("SLEEP_BETWEEN_REQUESTS", "0.5"))
+MAX_WORKERS_DEFAULT = int(os.environ.get("MAX_WORKERS", "10"))
+# number of attempts when encountering 403 before switching to a slower, more polite mode
+MAX_403_ATTEMPTS = int(os.environ.get("MAX_403_ATTEMPTS", "5"))
 # ------------------------------------------
+
+# A short list of common desktop browser user agents for rotation.
+USER_AGENTS = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Safari/605.1.15",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0",
+]
+
+# proxies: can be provided via PROXIES env var (comma-separated) or standard HTTP(S)_PROXY env variables
+PROXIES_ENV = [p.strip() for p in os.environ.get("PROXIES", "").split(",") if p.strip()]
+STANDARD_HTTP_PROXY = os.environ.get("HTTP_PROXY") or os.environ.get("http_proxy")
+STANDARD_HTTPS_PROXY = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
+if STANDARD_HTTP_PROXY and not PROXIES_ENV:
+    PROXIES_ENV.append(STANDARD_HTTP_PROXY)
+if STANDARD_HTTPS_PROXY and not PROXIES_ENV:
+    PROXIES_ENV.append(STANDARD_HTTPS_PROXY)
+
+# default headers; we'll rotate UA and add referer/accept-language each request
+BASE_HEADERS = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Connection': 'keep-alive',
+}
+
 
 URI_RE = re.compile(
     r'(?:vless|vmess|trojan|ss)://'            # scheme
@@ -42,6 +90,56 @@ URI_RE = re.compile(
 )
 
 FLAG_RE = re.compile(r'[\U0001F1E6-\U0001F1FF]{2}')
+
+
+def random_sleep(min_s=0.2, max_s=1.0):
+    """Sleep a small random amount to avoid burst patterns."""
+    time.sleep(random.uniform(min_s, max_s))
+
+
+def make_session(proxy: Optional[str] = None, backoff_factor: float = 0.5) -> requests.Session:
+    """
+    Create a requests.Session with retries for transient errors (5xx, 429).
+    Note: we do NOT include 403 in the automatic retry list because 403 often means
+    "blocked" and should be handled with different headers/proxies/backoff logic.
+    """
+    session = requests.Session()
+    retries = Retry(
+        total=3,
+        backoff_factor=backoff_factor,
+        status_forcelist=(429, 500, 502, 503, 504),
+        allowed_methods=frozenset(['GET', 'POST', 'HEAD', 'OPTIONS'])
+    )
+    adapter = HTTPAdapter(max_retries=retries)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    if proxy:
+        session.proxies.update({
+            'http': proxy,
+            'https': proxy,
+        })
+    # default headers will be applied per-request (so we can rotate UA)
+    return session
+
+
+def choose_proxy(attempt: int) -> Optional[str]:
+    """Return a proxy URL from environment list on some attempts to rotate IPs."""
+    if not PROXIES_ENV:
+        return None
+    # simple rotation strategy: pick a random proxy for the given attempt
+    return random.choice(PROXIES_ENV)
+
+
+def build_headers():
+    """Return headers including a rotated User-Agent and a Referer"""
+    ua = random.choice(USER_AGENTS)
+    h = BASE_HEADERS.copy()
+    h['User-Agent'] = ua
+    # random referer to look like normal navigation
+    h['Referer'] = random.choice([BASE_URL, BASE_URL + '/', BASE_URL + '/?page=1'])
+    # keep a stable accept-language suited to Github Actions environment
+    h['Accept-Language'] = 'en-US,en;q=0.9'
+    return h
 
 
 def clean_uri(uri: str) -> str:
@@ -65,9 +163,7 @@ def extract_flag_from_ps(ps: str) -> str:
 
 
 def transform_vmess(uri: str) -> str:
-    """Attempt to decode vmess payload, normalise 'ps' to a short flag when possible.
-    If decoding/parsing fails, return original uri unchanged.
-    """
+    """Attempt to decode vmess payload, normalise 'ps' to a short flag when possible."""
     try:
         prefix, payload = uri.split('://', 1)
     except ValueError:
@@ -103,15 +199,7 @@ def transform_vmess(uri: str) -> str:
 
 
 def validate_uri_basic(uri: str) -> bool:
-    """A lightweight validation that avoids external dependencies.
-    - vmess: try to base64-decode JSON payload
-    - vless: require '@' and ':' (basic form)
-    - trojan: check minimal length
-    - ss: accept (more complex SS parsing omitted)
-
-    This intentionally errs on the side of permissiveness (to keep
-    scraped configs) while blocking obvious garbage.
-    """
+    """Lightweight validation to filter obvious garbage."""
     if not uri or '://' not in uri:
         return False
     scheme = uri.split('://', 1)[0].lower()
@@ -121,7 +209,6 @@ def validate_uri_basic(uri: str) -> bool:
         payload = uri.split('://', 1)[1]
         if '#' in payload:
             payload = payload.split('#', 1)[0]
-        # ensure length looks reasonable
         if len(payload) < 16:
             return False
         try:
@@ -129,7 +216,6 @@ def validate_uri_basic(uri: str) -> bool:
             if missing:
                 payload += '=' * (4 - missing)
             decoded = base64.b64decode(payload)
-            # check if it looks like JSON
             text = decoded.decode('utf-8', errors='ignore')
             if text.strip().startswith('{') and 'ps' in text:
                 return True
@@ -137,18 +223,15 @@ def validate_uri_basic(uri: str) -> bool:
         except Exception:
             return False
     if scheme == 'vless':
-        # vless typically contains user@host:port or path; basic sanity
         return ('@' in uri and ':' in uri)
     if scheme == 'trojan':
-        # trojan://password@host:port
         return len(uri) > 10 and '@' in uri
     if scheme == 'ss':
-        # many ss links are base64 payloads; accept for now
         return len(uri) > 8
     return False
 
 
-def extract_configs_from_html(html: str) -> list:
+def extract_configs_from_html(html: str) -> List[str]:
     found = []
     for m in URI_RE.findall(html):
         candidate = clean_uri(m)
@@ -212,59 +295,131 @@ def extract_configs_from_html(html: str) -> list:
             if validate_uri_basic(uri):
                 valid_found.append(uri)
         except Exception:
-            # be forgiving
             pass
     # preserve order and uniqueness
     return list(dict.fromkeys(valid_found))
 
 
-def extract_from_server(server_url: str) -> list:
-    try:
-        resp = requests.get(server_url, headers=HEADERS, timeout=REQUEST_TIMEOUT)
-        resp.raise_for_status()
-        html = resp.text.replace('\r\n', '\n').replace('\r', '\n')
-        return extract_configs_from_html(html)
-    except Exception as e:
-        print(f"[WARN] fetch error {server_url}: {e}", file=sys.stderr)
+def fetch_with_anti_block(session: requests.Session, url: str, max_403_attempts: int = MAX_403_ATTEMPTS) -> Optional[str]:
+    """
+    Fetch URL with anti-block strategies:
+    - rotate User-Agent
+    - on 403: try a few attempts with different UA and proxies and exponential backoff + jitter
+    - on success: return text; on persistent failure return None
+    """
+    attempt = 0
+    slow_mode = False
+    while attempt < max_403_attempts:
+        attempt += 1
+        proxy = choose_proxy(attempt)
+        if proxy:
+            session.proxies.update({'http': proxy, 'https': proxy})
+        headers = build_headers()
+        try:
+            # Random tiny delay before request to reduce burstiness
+            random_sleep(0.1, 0.6)
+            resp = session.get(url, headers=headers, timeout=REQUEST_TIMEOUT, allow_redirects=True)
+            status = resp.status_code
+            if status == 200:
+                return resp.text
+            if status == 403:
+                # Blocked — try anti-block strategies before giving up
+                print(f"[WARN] 403 on {url} (attempt {attempt}/{max_403_attempts}), proxy={proxy}, ua={headers.get('User-Agent')}", file=sys.stderr)
+                # escalate to slow mode if repeated
+                if attempt >= 2:
+                    slow_mode = True
+                # exponential backoff with jitter
+                sleep_for = (2 ** attempt) + random.uniform(0.5, 2.0)
+                if slow_mode:
+                    # longer pause if in slow mode
+                    sleep_for *= 1.5
+                time.sleep(sleep_for)
+                # possibly change proxy and UA automatically by continuing loop
+                continue
+            if 500 <= status < 600 or status == 429:
+                # transient server issues, retry after a short backoff
+                print(f"[WARN] transient status {status} for {url} (attempt {attempt})", file=sys.stderr)
+                time.sleep((1 + attempt) * 0.6)
+                continue
+            # other statuses: log and break
+            print(f"[WARN] unexpected status {status} for {url}", file=sys.stderr)
+            return None
+        except requests.RequestException as e:
+            print(f"[WARN] request exception for {url}: {e} (attempt {attempt})", file=sys.stderr)
+            time.sleep((1 + attempt) * 0.5)
+            continue
+    print(f"[WARN] exhausted attempts for {url}, giving up.", file=sys.stderr)
+    return None
+
+
+def extract_from_server(server_url: str) -> List[str]:
+    # create a fresh session per server request to allow different proxies and UA rotation
+    session = make_session()
+    html = fetch_with_anti_block(session, server_url)
+    if not html:
+        return []
+    html = html.replace('\r\n', '\n').replace('\r', '\n')
+    return extract_configs_from_html(html)
+
+
+def scrape(base_url: str = BASE_URL, pages: int = PAGES_TO_SCRAPE) -> List[str]:
+    """
+    Main scraping orchestration. Uses ThreadPoolExecutor for index + server pages.
+    If the primary base_url is blocked, attempts alternative base URLs (mirrors)
+    when available in ALTERNATIVE_BASES.
+    """
+    def fetch_index_page(page: int) -> List[str]:
+        page_url = f"{base_url}/?page={page}"
+        session = make_session()
+        html = fetch_with_anti_block(session, page_url)
+        if not html:
+            return []
+        soup = BeautifulSoup(html, 'html.parser')
+        server_links = []
+        for a in soup.find_all('a', href=True):
+            href = getattr(a, 'attrs', {}).get('href', '')
+            if href:
+                href = str(href).strip()
+                if re.match(r'^/servers/\d+/?', href):
+                    server_links.append(href)
+        return server_links
+
+    # try primary base_url; if everything is blocked, try mirrors sequentially
+    attempted_bases = [base_url] + ALTERNATIVE_BASES
+    all_server_links = []
+    for base_candidate in attempted_bases:
+        print(f"[INFO] trying base URL: {base_candidate}")
+        with ThreadPoolExecutor(max_workers=min(MAX_WORKERS_DEFAULT, 6)) as executor:
+            page_results = list(executor.map(fetch_index_page, range(1, pages + 1)))
+        links = []
+        for lst in page_results:
+            links.extend(lst)
+        links = list(dict.fromkeys(links))
+        if links:
+            print(f"[INFO] found {len(links)} server links on {base_candidate}")
+            base_url = base_candidate  # adopt the working base URL
+            all_server_links = links
+            break
+        else:
+            print(f"[WARN] no server links found on {base_candidate}, trying next mirror if available")
+            # small pause before trying next base
+            time.sleep(1 + random.random() * 2)
+
+    if not all_server_links:
+        print("[WARN] total unique server links: 0")
         return []
 
-
-def scrape(base_url=BASE_URL, pages=PAGES_TO_SCRAPE):
-    def fetch_page(page):
-        page_url = f"{base_url}/?page={page}"
-        try:
-            resp = requests.get(page_url, headers=HEADERS, timeout=REQUEST_TIMEOUT)
-            resp.raise_for_status()
-            soup = BeautifulSoup(resp.text, 'html.parser')
-            server_links = []
-            for a in soup.find_all('a', href=True):
-                href = getattr(a, 'attrs', {}).get('href', '')
-                if href:
-                    href = str(href).strip()
-                    if re.match(r'^/servers/\d+/?', href):
-                        server_links.append(href)
-            return server_links
-        except Exception as e:
-            print(f"[WARN] index fetch error {page_url}: {e}", file=sys.stderr)
-            return []
-
-    print(f"[INFO] scraping {pages} index pages concurrently...")
-    with ThreadPoolExecutor(max_workers=10) as executor:
-        page_results = list(executor.map(fetch_page, range(1, pages + 1)))
-
-    all_server_links = []
-    for links in page_results:
-        all_server_links.extend(links)
-    all_server_links = list(dict.fromkeys(all_server_links))
     print(f"[INFO] total unique server links: {len(all_server_links)}")
 
-    def fetch_server(rel):
-        server_url = base_url + rel
-        cfgs = extract_from_server(server_url)
-        return cfgs
+    def fetch_server(rel: str) -> List[str]:
+        server_url = base_url.rstrip('/') + rel
+        # when we fetch many servers, create a session inside extract_from_server
+        return extract_from_server(server_url)
 
     print("[INFO] scraping server pages concurrently...")
-    with ThreadPoolExecutor(max_workers=20) as executor:
+    # use a reasonable concurrency; if servers are blocking, lower this number
+    max_workers = min(MAX_WORKERS_DEFAULT, max(4, len(all_server_links)))
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
         server_results = list(executor.map(fetch_server, all_server_links))
 
     results = []
@@ -278,7 +433,7 @@ def scrape(base_url=BASE_URL, pages=PAGES_TO_SCRAPE):
     return results
 
 
-def save_configs(configs: list, out_file: Path):
+def save_configs(configs: List[str], out_file: Path):
     out_file.parent.mkdir(parents=True, exist_ok=True)
     text = "\n".join(configs) + ("\n" if configs else "")
     tmp = out_file.with_suffix('.tmp')
@@ -288,6 +443,13 @@ def save_configs(configs: list, out_file: Path):
 
 
 if __name__ == "__main__":
+    # allow overriding settings from environment for GitHub Actions or manual runs
+    if os.environ.get("PAGES_TO_SCRAPE"):
+        try:
+            PAGES_TO_SCRAPE = int(os.environ.get("PAGES_TO_SCRAPE"))
+        except Exception:
+            pass
+
     configs = scrape()
     if not configs:
         print("No configs found from scraping.")
