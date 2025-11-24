@@ -26,7 +26,7 @@ import random
 # ---------------- SETTINGS ----------------
 BASE_URL = "https://www.v2nodes.com"
 FALLBACK_URL = "https://raw.githubusercontent.com/darkvpnapp/CloudflarePlus/refs/heads/main/proxy"
-PAGES_TO_SCRAPE = 1
+PAGES_TO_SCRAPE = 5
 REQUEST_TIMEOUT = 12
 OUTPUT_FILE = Path("configs.txt")
 # ------------------------------------------
