@@ -5,7 +5,7 @@
 Mining order:
 1- Telegram
 2- v2nodes.com
-3- GitHub fallback
+3- GitHub fallback (ONLY if both empty)
 """
 
 import requests
@@ -189,15 +189,17 @@ def save(configs):
 # ------------- MAIN -------------
 
 if __name__ == "__main__":
-    configs = mine_telegram()
 
-    if not configs:
-        print("[WARN] Telegram failed → trying v2nodes…")
-        configs = mine_v2nodes()
+    tele = mine_telegram()
+    v2 = mine_v2nodes()
 
-    if not configs:
-        print("[WARN] v2nodes failed → trying fallback…")
+    if not tele and not v2:
+        print("[WARN] Telegram + v2nodes empty → fallback…")
         configs = mine_fallback()
+    else:
+        configs = tele + v2
+
+    configs = list(dict.fromkeys(configs))
 
     if not configs:
         print("[ERROR] nothing found.")
