@@ -85,7 +85,7 @@ def clean_uri(uri: str) -> str:
     uri = uri.strip().rstrip('/')
     if uri.startswith("vmess://"):
         uri = transform_vmess(uri)
-    return uri + "#@ShineNET%20VPN"
+    return uri + "#Telegram: @ShineNETVPN - @ShythonX"
 
 
 # -------- 1) Mining Telegram --------
