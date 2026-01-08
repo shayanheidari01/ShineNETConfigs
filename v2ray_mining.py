@@ -23,8 +23,8 @@ from concurrent.futures import ThreadPoolExecutor
 CHANNELS = [
     "ConfigsHUB",
     "V2WRAY",
-    "MARAMBASHI",
-    "configshere",
+ #   "MARAMBASHI",
+#    "configshere",
 ]
 
 PAGES_TO_CHECK = 8
