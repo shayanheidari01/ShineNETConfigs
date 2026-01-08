@@ -3,7 +3,7 @@
 
 """
 Mining order:
-1- Telegram
+1- Telegram (multiple channels)
 2- v2nodes.com
 3- GitHub fallback (ONLY if both empty)
 """
@@ -20,17 +20,27 @@ from concurrent.futures import ThreadPoolExecutor
 
 
 # ---------------- SETTINGS ----------------
-CHANNEL = "ConfigsHUB"
+CHANNELS = [
+    "ConfigsHUB",
+    "V2WRAY",
+    "MARAMBASHI",
+    "configshere",
+]
+
 PAGES_TO_CHECK = 8
-BASE = f"https://t.me/s/{CHANNEL}"
 
 V2_URL = "https://www.v2nodes.com"
 FALLBACK_URL = "https://raw.githubusercontent.com/darkvpnapp/CloudflarePlus/refs/heads/main/proxy"
+
 OUTPUT_FILE = Path("configs.txt")
 REQUEST_TIMEOUT = 12
 # ------------------------------------------
 
-URI_RE = re.compile(r'(?:vless|vmess|trojan|ss)://[^\s\'\"<>()[\]{}]+', re.IGNORECASE)
+
+URI_RE = re.compile(
+    r'(?:vless|vmess|trojan|ss)://[^\s\'\"<>()[\]{}]+',
+    re.IGNORECASE
+)
 
 USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; x64) Chrome/122",
@@ -40,7 +50,7 @@ USER_AGENTS = [
 
 
 def random_ip():
-    return ".".join(str(random.randint(1,255)) for _ in range(4))
+    return ".".join(str(random.randint(1, 255)) for _ in range(4))
 
 
 def random_headers():
@@ -52,21 +62,28 @@ def random_headers():
     }
 
 
-# ----- VMESS fix -----
+# ---------------- VMESS FIX ----------------
 def transform_vmess(uri: str) -> str:
     try:
-        p, payload = uri.split("://", 1)
-        if p.lower() != "vmess":
+        proto, payload = uri.split("://", 1)
+        if proto.lower() != "vmess":
             return uri
-        payload = payload.split('#')[0]
+
+        payload = payload.split("#")[0]
         pad = len(payload) % 4
         if pad:
-            payload += "="*(4-pad)
+            payload += "=" * (4 - pad)
+
         data = json.loads(base64.b64decode(payload))
-        data['ps'] = "🏴‍Shine"
-        jb = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
+        data["ps"] = "🏴‍Shine"
+
+        jb = json.dumps(
+            data,
+            ensure_ascii=False,
+            separators=(",", ":")
+        )
         return "vmess://" + base64.b64encode(jb.encode()).decode()
-    except:
+    except Exception:
         return uri
 
 
@@ -74,64 +91,79 @@ def validate(uri: str) -> bool:
     u = uri.lower()
     if u.startswith("vmess://"):
         return len(uri.split("://")[1]) > 16
-    if u.startswith("vless://") or u.startswith("trojan://"):
-        return '@' in uri and ':' in uri
+    if u.startswith(("vless://", "trojan://")):
+        return "@" in uri and ":" in uri
     if u.startswith("ss://"):
         return True
     return False
 
 
 def clean_uri(uri: str) -> str:
-    uri = uri.strip().rstrip('/')
+    uri = uri.strip().rstrip("/")
     if uri.startswith("vmess://"):
         uri = transform_vmess(uri)
-    return uri + "#Telegram: @ShineNETVPN"
+    return uri + "#Telegram:@ShineNETVPN"
 
 
-# -------- 1) Mining Telegram --------
+# ---------------- 1) TELEGRAM ----------------
 def mine_telegram():
-    print("[INFO] mining Telegram...")
-    posts = []
+    print("[INFO] mining Telegram channels...")
+    all_configs = []
 
-    for i in range(PAGES_TO_CHECK):
-        url = BASE if i == 0 else f"{BASE}?before={i*50}"
-        try:
-            html = requests.get(url, headers=random_headers(), timeout=REQUEST_TIMEOUT).text
-        except:
-            continue
+    for channel in CHANNELS:
+        print(f"[INFO] channel → {channel}")
+        base = f"https://t.me/s/{channel}"
+        posts = []
 
-        soup = BeautifulSoup(html, "html.parser")
-        for p in soup.select(".tgme_widget_message_text"):
-            posts.append(p.get_text("\n", strip=True))
+        for i in range(PAGES_TO_CHECK):
+            url = base if i == 0 else f"{base}?before={i * 50}"
+            try:
+                html = requests.get(
+                    url,
+                    headers=random_headers(),
+                    timeout=REQUEST_TIMEOUT
+                ).text
+            except Exception:
+                continue
 
-    posts = list(dict.fromkeys(posts))
-    posts = posts[-50:]
+            soup = BeautifulSoup(html, "html.parser")
+            for p in soup.select(".tgme_widget_message_text"):
+                posts.append(p.get_text("\n", strip=True))
 
-    configs = []
-    for text in posts:
-        for c in URI_RE.findall(text):
-            c = re.split(r"#|\s|\[|\(|$|➡|🔗|👇", c)[0]
-            c = clean_uri(c)
-            if validate(c):
-                configs.append(c)
+        posts = list(dict.fromkeys(posts))[-50:]
 
-    configs = list(dict.fromkeys(configs))
-    print(f"[INFO] Telegram configs: {len(configs)}")
-    return configs
+        for text in posts:
+            for c in URI_RE.findall(text):
+                c = re.split(
+                    r"#|\s|\[|\(|$|➡|🔗|👇",
+                    c
+                )[0]
+                c = clean_uri(c)
+                if validate(c):
+                    all_configs.append(c)
+
+    all_configs = list(dict.fromkeys(all_configs))
+    print(f"[INFO] Telegram total configs: {len(all_configs)}")
+    return all_configs
 
 
-# -------- 2) Mining v2nodes --------
-
+# ---------------- 2) V2NODES ----------------
 def extract_from_server(url):
     try:
-        html = requests.get(url, headers=random_headers(), timeout=REQUEST_TIMEOUT).text
+        html = requests.get(
+            url,
+            headers=random_headers(),
+            timeout=REQUEST_TIMEOUT
+        ).text
+
         found = []
         for x in URI_RE.findall(html):
             x = clean_uri(x)
             if validate(x):
                 found.append(x)
+
         return list(dict.fromkeys(found))
-    except:
+    except Exception:
         return []
 
 
@@ -142,62 +174,84 @@ def mine_v2nodes(pages=5):
     def fetch_page(page):
         try:
             url = f"{V2_URL}/?page={page}"
-            html = requests.get(url, headers=random_headers(), timeout=REQUEST_TIMEOUT).text
+            html = requests.get(
+                url,
+                headers=random_headers(),
+                timeout=REQUEST_TIMEOUT
+            ).text
+
             soup = BeautifulSoup(html, "html.parser")
-            return [a['href'] for a in soup.find_all('a', href=True) if a['href'].startswith("/servers/")]
-        except:
+            return [
+                a["href"]
+                for a in soup.find_all("a", href=True)
+                if a["href"].startswith("/servers/")
+            ]
+        except Exception:
             return []
 
-    with ThreadPoolExecutor(5) as ex:
-        res = list(ex.map(fetch_page, range(1, pages+1)))
+    with ThreadPoolExecutor(max_workers=5) as ex:
+        res = list(ex.map(fetch_page, range(1, pages + 1)))
 
     links = list(dict.fromkeys(sum(res, [])))
     if not links:
         return []
 
-    with ThreadPoolExecutor(10) as ex:
-        final = list(ex.map(lambda r: extract_from_server(V2_URL+r), links))
+    with ThreadPoolExecutor(max_workers=10) as ex:
+        final = list(
+            ex.map(
+                lambda r: extract_from_server(V2_URL + r),
+                links
+            )
+        )
 
     configs = list(dict.fromkeys(sum(final, [])))
     print(f"[INFO] v2nodes configs: {len(configs)}")
     return configs
 
 
-# -------- 3) fallback --------
-
+# ---------------- 3) FALLBACK ----------------
 def mine_fallback():
     print("[INFO] mining fallback...")
     try:
-        html = requests.get(FALLBACK_URL, headers=random_headers()).text
+        html = requests.get(
+            FALLBACK_URL,
+            headers=random_headers(),
+            timeout=REQUEST_TIMEOUT
+        ).text
+
         configs = []
         for x in URI_RE.findall(html):
             x = clean_uri(x)
             if validate(x):
                 configs.append(x)
+
         configs = list(dict.fromkeys(configs))
         print(f"[INFO] fallback configs: {len(configs)}")
         return configs
-    except:
+    except Exception:
         return []
 
 
+# ---------------- SAVE ----------------
 def save(configs):
-    OUTPUT_FILE.write_text("\n".join(configs)+"\n", encoding="utf-8")
+    OUTPUT_FILE.write_text(
+        "\n".join(configs) + "\n",
+        encoding="utf-8"
+    )
     print(f"[INFO] saved {len(configs)} configs")
 
 
-# ------------- MAIN -------------
-
+# ---------------- MAIN ----------------
 if __name__ == "__main__":
 
-    tele = mine_telegram()
-    v2 = mine_v2nodes()
+    telegram_configs = mine_telegram()
+    v2_configs = mine_v2nodes()
 
-    if not tele and not v2:
+    if not telegram_configs and not v2_configs:
         print("[WARN] Telegram + v2nodes empty → fallback…")
         configs = mine_fallback()
     else:
-        configs = tele + v2
+        configs = telegram_configs + v2_configs
 
     configs = list(dict.fromkeys(configs))
 
