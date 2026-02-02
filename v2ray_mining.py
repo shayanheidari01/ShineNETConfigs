@@ -21,7 +21,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 # ---------------- SETTINGS ----------------
 CHANNELS = [
-    "ConfigsHUB",
+    "ConfigsHUB2",
     "V2WRAY",
  #   "MARAMBASHI",
 #    "configshere",
