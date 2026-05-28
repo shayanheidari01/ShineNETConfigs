@@ -235,7 +235,7 @@ def mine_fallback():
 # ---------------- SAVE ----------------
 def save(configs):
     OUTPUT_FILE.write_text(
-        "\n".join(configs) + "\n",
+        "\n\n".join(configs) + "\n",
         encoding="utf-8"
     )
     print(f"[INFO] saved {len(configs)} configs")
