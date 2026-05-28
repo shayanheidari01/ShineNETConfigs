@@ -140,7 +140,7 @@ def mine_telegram():
                 )[0]
                 c = clean_uri(c)
                 if validate(c):
-                    all_configs.append(c)
+                    all_configs.append(c+"#")
 
     all_configs = list(dict.fromkeys(all_configs))
     print(f"[INFO] Telegram total configs: {len(all_configs)}")
