@@ -36,7 +36,6 @@ OUTPUT_FILE = Path("configs.txt")
 REQUEST_TIMEOUT = 12
 # ------------------------------------------
 
-
 URI_RE = re.compile(
     r'(?:vless|vmess|trojan|ss)://[^\s\'\"<>()[\]{}]+',
     re.IGNORECASE
