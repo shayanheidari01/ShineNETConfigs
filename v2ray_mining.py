@@ -36,6 +36,7 @@ OUTPUT_FILE = Path("configs.txt")
 REQUEST_TIMEOUT = 12
 # ------------------------------------------
 
+
 URI_RE = re.compile(
     r'(?:vless|vmess|trojan|ss)://[^\s\'\"<>()[\]{}]+',
     re.IGNORECASE
@@ -135,11 +136,11 @@ def mine_telegram():
             for c in URI_RE.findall(text):
                 c = re.split(
                     r"#|\s|\[|\(|$|➡|🔗|👇",
-                    c
+                    "#"+c
                 )[0]
                 c = clean_uri(c)
                 if validate(c):
-                    all_configs.append(c+"#")
+                    all_configs.append(c)
 
     all_configs = list(dict.fromkeys(all_configs))
     print(f"[INFO] Telegram total configs: {len(all_configs)}")
