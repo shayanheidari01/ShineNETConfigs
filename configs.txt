@@ -1,143 +1,147 @@
-vless://478cc26d-16b3-4fdd-be64-60d5a58c1622@172.64.147.255:80?path=%2F&security=none&encryption=none&host=tt.andishehparenting.com&type=ws#🇩🇪ShineNET VPN ⚡️
+trojan://humanity@188.114.96.4:443?path=%2Fassignment&security=tls&alpn=http%2F1.1&insecure=1&host=www.calmloud.com&fp=chrome&type=ws&allowInsecure=1&sni=www.calmloud.com#🇫🇷ShineNET VPN ⚡️
 
-vless://4259cd49-5ad0-432d-a078-29159dc999d0@fl-3-direct.djarbnet.ru:443?path=/getupdates&security=tls&encryption=none&insecure=0&host=fl-3-direct.djarbnet.ru&type=ws&allowInsecure=0&sni=fl-3-direct.djarbnet.ru#🇫🇮ShineNET VPN ⚡️
+vless://256c5f48-4908-4255-83d1-c86cb58f22b4@fr.denditop.site:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=fr.denditop.site&fp=chrome&pbk=wgoLhL4pRP0y6fu6He4qW_ElohCM_ANWJF3HEoUhNz4&sid=9c2378562188c3cb&spx=%2F&type=tcp&headerType=none#🇫🇷ShineNET VPN ⚡️
 
-vmess://eyJhZGQiOiI4NS45MC4yMTcuNDIiLCJhaWQiOiIwIiwiaG9zdCI6IiIsImlkIjoiMDQ2MjFiYWUtYWIzNi0xMWVjLWI5MDktMDI0MmFjMTIwMDAyIiwibmV0IjoidGNwIiwicGF0aCI6Ii8iLCJwb3J0IjoiMjIzMjQiLCJwcyI6IvCfj7TigI1TaGluZSIsInNraXAtY2VydC12ZXJpZnkiOnRydWUsInRscyI6IiIsInR5cGUiOiJub25lIiwidiI6IjIifQ==ShineNET VPN ⚡️
+vless://394f6981-a782-4779-9a85-e6cf22935d93@152.233.28.198:8443?security=tls&alpn=h2&encryption=none&insecure=1&headerType=none&type=tcp&allowInsecure=1&sni=uk1.fromblancwithlove.com#🇬🇧ShineNET VPN ⚡️
 
-trojan://humanity@45.130.125.76:443?security=tls&sni=www.calmloud.com&alpn=http/1.1&insecure=1&allowInsecure=1&type=ws&host=www.calmloud.com&path=/assignment#🇫🇷ShineNET VPN ⚡️
+vless://a12b0d31-f599-498e-b76e-8558a14b766b@47.79.144.103:25242?path=/a12b0d31&security=none&encryption=none&type=ws#🇯🇵ShineNET VPN ⚡️
 
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpQV3BqUG8zdHFoUE40eVJa@8.209.74.72:20001#🇩🇪ShineNET VPN ⚡️
+vmess://eyJ2IjoiMiIsInBzIjoi8J+PtOKAjVNoaW5lIiwiYWRkIjoiODIuMTk4LjI0Ni4yMTQiLCJwb3J0IjoiMTgwIiwidHlwZSI6Im5vbmUiLCJpZCI6ImQxM2ZjMmY1LTNlMDUtNDc5NS04MWViLTQ0MTQzYTA5ZTU1MiIsImFpZCI6IjAiLCJuZXQiOiJ0Y3AiLCJwYXRoIjoiLyIsImhvc3QiOiIiLCJ0bHMiOiIiLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlfQ==ShineNET VPN ⚡️
 
-vmess://eyJhZGQiOiIxNTMuMTIxLjczLjE3NSIsImFpZCI6IjAiLCJhbHBuIjoiIiwiZnAiOiIiLCJob3N0IjoiIiwiaWQiOiJiMDYwNTRhZS1mMjQ5LTQzOGUtOTk4YS04ZTY3YmQ4ZGY2NTMiLCJpbnNlY3VyZSI6IjAiLCJuZXQiOiJ0Y3AiLCJwYXRoIjoiIiwicG9ydCI6IjMyMjIxIiwicHMiOiLwn4+04oCNU2hpbmUiLCJzY3kiOiJhdXRvIiwic25pIjoiIiwidGxzIjoiIiwidHlwZSI6Im5vbmUiLCJ2IjoiMiIsInNraXAtY2VydC12ZXJpZnkiOnRydWV9ShineNET VPN ⚡️
+vless://48ff2b70-e180-582f-8866-d9a2edeed5f5@51.158.206.93:23576?security=reality&encryption=none&pbk=1y5h2FGWKXTJ9xLPCqPo6Mw7RxoZzh6fGkEQKNxpZ3s&headerType=none&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=fuck.rkn&sid=01#🇳🇱ShineNET VPN ⚡️
 
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTp6ZlJ3ZHJlTGFCT0d3VXpDYVdtdklO@195.93.253.240:14130#🇳🇱ShineNET VPN ⚡️
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTplTFBsSVZ1Ulo2VUp5YXBWRGVUKytsN2ZZQzB1b3dYSkZsYjlxaG50QWQ0PQ@154.18.239.126:37425#🇸🇬ShineNET VPN ⚡️
 
-vmess://eyJhZGQiOiI0Ny43Ni4yNTQuNzAiLCJhaWQiOiIwIiwiYWxwbiI6IiIsImZwIjoiIiwiaG9zdCI6Im4xNzUzMTAxMjc3LjR1OW1hLmljdSIsImlkIjoiNmVhNDhkZmUtN2RlMi00NWRjLTkyNjctZDRkOWVmZmFkOWZjIiwibmV0Ijoid3MiLCJwYXRoIjoiLyIsInBvcnQiOiI0NDMiLCJwcyI6IvCfj7TigI1TaGluZSIsInNjeSI6ImF1dG8iLCJzZWN1cml0eSI6ImF1dG8iLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlLCJzbmkiOiIiLCJ0bHMiOiJ0bHMiLCJ0eXBlIjoiYXV0byIsInYiOiIyIn0=ShineNET VPN ⚡️
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpMMW1kWEZRcTN1NjExWklC@20.87.107.99:443#🇿🇦ShineNET VPN ⚡️
 
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpXQzBHYmlDazY3SzhuSERhREhtWUlY@159.223.236.36:19582#🇳🇱ShineNET VPN ⚡️
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTprMWRCT21PQjRvcWk3VW1wMzdhMWJR@82.38.31.194:8080#🏳ShineNET VPN ⚡️
 
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTppZE12b2V3clN5TEx2RXZQMDNrOXpS@138.68.153.223:46576#🇬🇧ShineNET VPN ⚡️
+vless://48ff2b70-e180-582f-8866-d9a2edeed5f5@51.158.206.98:23576?security=reality&encryption=none&pbk=1y5h2FGWKXTJ9xLPCqPo6Mw7RxoZzh6fGkEQKNxpZ3s&headerType=none&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=fuck.rkn&sid=01#🇳🇱ShineNET VPN ⚡️
 
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpDSm1UQ0N4N0x0dWQ@108.181.58.239:8388#🇳🇱ShineNET VPN ⚡️
+vless://48ff2b70-e180-582f-8866-d9a2edeed5f5@51.158.206.103:23576?security=reality&encryption=none&pbk=1y5h2FGWKXTJ9xLPCqPo6Mw7RxoZzh6fGkEQKNxpZ3s&headerType=none&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=fuck.rkn&sid=01#🇳🇱ShineNET VPN ⚡️
 
-vless://079c1b04-7ef9-4c49-8a7a-849a18ba7b9b@83.222.20.64:17910?encryption=none&security=reality&sni=yahoo.com&fp=chrome&pbk=KUhrhiJBplVCVCrAKP2KjIA_asOgkkvEEAxUJVofjgc&sid=8c09fb78b12f&spx=%2F&type=tcp&headerType=none#🇱🇻ShineNET VPN ⚡️
+vless://394f6981-a782-4779-9a85-e6cf22935d93@195.181.173.199:8443?allowInsecure=1&alpn=h2&encryption=none&security=tls&sni=ams1.fromblancwithlove.com&type=tcp#🇳🇱ShineNET VPN ⚡️
 
-vmess://eyJhZGQiOiIzOC4xMTAuMS4yNDYiLCJhaWQiOiIwIiwiaG9zdCI6IiIsImlkIjoiZjhjOGRjM2QtMGQzNy00NmIwLThiMzQtYTcyMzI4ODJmY2ZlIiwibmV0IjoidGNwIiwicGF0aCI6Ii8iLCJwb3J0IjoiMTgwMDAiLCJwcyI6IvCfj7TigI1TaGluZSIsInNraXAtY2VydC12ZXJpZnkiOnRydWUsInRscyI6IiIsInR5cGUiOiJub25lIiwidiI6IjIifQ==ShineNET VPN ⚡️
+vless://a6f1755f-0140-4bea-8727-0db1bed7c4df@162.159.13.20:443?allowInsecure=1&encryption=none&host=juzi.qea.ccwu.cc&path=%2F&security=tls&sni=juzi.qea.ccwu.cc&type=ws#🇸🇬ShineNET VPN ⚡️
+
+vmess://eyJhZGQiOiJ1ay5jb25uZnVsbC5vcmciLCJhaWQiOiIwIiwiYWxwbiI6IiIsImZwIjoiY2hyb21lIiwiaG9zdCI6IiIsImlkIjoiZDY0ZDUyYjEtMTQ0Zi00YmNlLWE2ZDctMTMyNGRlMTg3YjFiIiwibmV0IjoidGNwIiwicGF0aCI6IiIsInBvcnQiOiIyMDUzIiwicHMiOiLwn4+04oCNU2hpbmUiLCJzY3kiOiJhdXRvIiwic25pIjoiIiwidGxzIjoidGxzIiwidHlwZSI6Im5vbmUiLCJ2IjoiMiIsInNraXAtY2VydC12ZXJpZnkiOnRydWV9ShineNET VPN ⚡️
+
+vless://76713d07-5a6b-49c2-abd8-bc450a2fa7fc@download.spectrum.vu:443?security=reality&type=tcp&sni=download.spectrum.vu&fp=chrome&flow=xtls-rprx-vision&sid=d1e9faa1b2c3&pbk=sXC7sPCzHG_uYfvk3GSUdYQKfHAwirOVWMhO50Y9Pn8&encryption=none#🇦🇪ShineNET VPN ⚡️
+
+vless://01ef96b4-e7ec-4218-8ffe-a59e1cdfd836@downlod.musicribvar.com:45029?encryption=none&security=none&type=tcp#🇫🇮ShineNET VPN ⚡️
 
 vless://t-me-kinsta_service@net.kakakakaka.dpdns.org:47411?type=tcp&encryption=none&security=none#🇩🇪ShineNET VPN ⚡️
 
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTprMWRCT21PQjRvcWk3VW1wMzdhMWJR@82.38.31.187:8080#🇳🇱ShineNET VPN ⚡️
-
-vless://e258977b-e413-4718-a3af-02d75492c349@172.64.47.168:2096?path=%2F&security=tls&encryption=none&insecure=0&host=jp.aniua.qzz.io&type=ws&allowInsecure=0&sni=jp.aniua.qzz.io#🇸🇬ShineNET VPN ⚡️
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpBUmd2R1p5d0ErZ2FjZ0dWMjZCdm11MDUrd1ptUlcvaitBZFUrWjhCdDQ0PQ==@193.135.174.135:990#🇳🇱ShineNET VPN ⚡️
 
 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpvWklvQTY5UTh5aGNRVjhrYTNQYTNB@82.38.31.149:8080#🇳🇱ShineNET VPN ⚡️
 
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpoYkdycGZ2TnJKc1VtS21QYlIzaVky@tinkered-pennies-puppies.freesocks.work:443#🇯🇵ShineNET VPN ⚡️
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTprMWRCT21PQjRvcWk3VW1wMzdhMWJR@82.38.31.191:8080#🇳🇱ShineNET VPN ⚡️
 
-vmess://eyJhZGQiOiIxNjUuMTQwLjIxNi4xNDEiLCJhaWQiOiIwIiwiYWxwbiI6IiIsImZwIjoiIiwiaG9zdCI6IiIsImlkIjoiZTdkNzJhOGQtMjZmMi00YjU0LWIzNjYtMGM0M2UwYmNiYTdkIiwibmV0IjoidGNwIiwicGF0aCI6Ij9lZD0yMDQ4QEhpQnllVlBOTi0tQEhpQnllVlBOTi0tQEhpQnllVlBOTi0tQEhpQnllVlBOTi0tQEhpQnllVlBOTi0tQEhpQnllVlBOTi0tQEhpQnllVlBOTi0tQEhpQnllVlBOTi0tQEhpQnllVlBOTi0tQEhpQnllVlBOTi0tQEhpQnllVlBOTi0tQEhpQnllVlBOTi0tQEhpQnllVlBOTiIsInBvcnQiOiI0NDMiLCJwcyI6IvCfj7TigI1TaGluZSIsInNjeSI6ImF1dG8iLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlLCJzbmkiOiIiLCJ0bHMiOiIiLCJ0eXBlIjoibm9uZSIsInYiOiIyIn0=ShineNET VPN ⚡️
+vless://08f96221-9b7b-4e6f-8ffe-aee8b9c9b504@ov-canada1.09vpn.com:8443?encryption=none&path=/vless/&security=tls&type=ws#🇨🇦ShineNET VPN ⚡️
 
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpYVU1UeWdFTTFqVllJdnlzWEtxQTVU@hackney-latest-strike.freesocks.work:443#🇺🇸ShineNET VPN ⚡️
-
-vless://4dc0eec9-f0e1-4755-be7e-7ba628522d1b@91.99.145.207:443?path=/&security=none&encryption=none&type=ws#🇩🇪ShineNET VPN ⚡️
-
-trojan://humanity@165.215.250.14:443?type=ws&security=tls&path=/assignment&host=www.ignitelimit.com&sni=www.ignitelimit.com&fp=chrome&allowInsecure=1&ech=ip.gs+udp://8.8.8.8#🇫🇷ShineNET VPN ⚡️
-
-vmess://eyJhZGQiOiIxNzIuMTA0LjgwLjY2IiwiYWlkIjoiMCIsImFscG4iOm51bGwsImZwIjpudWxsLCJob3N0IjpudWxsLCJpZCI6IjA0NjIxYmFlLWFiMzYtMTFlYy1iOTA5LTAyNDJhYzEyMDAwMiIsIm5hbWUiOiLwn4ev8J+HtSBKUCAxIiwibmV0IjoidGNwIiwicGF0aCI6Ii8iLCJwb3J0IjoyMjMyNCwicHMiOiLwn4+04oCNU2hpbmUiLCJzY3kiOiJhdXRvIiwic25pIjpudWxsLCJ0bHMiOiIiLCJ0eXBlIjpudWxsLCJ2IjpudWxsLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlfQ==ShineNET VPN ⚡️
-
-ss://YWVzLTEyOC1nY206c2hhZG93c29ja3M@149.22.87.204:443#🇯🇵ShineNET VPN ⚡️
-
-vmess://eyJhZGQiOiJub2RlLWRlLmNvbm5lY3RzdWl0ZS5vcmciLCJhaWQiOiIwIiwiYWxwbiI6ImgyLGh0dHAvMS4xIiwiYXV0aG9yaXR5IjoiIiwiZGV2aWNlSUQiOiIiLCJleHRyYSI6IiIsImZwIjoiY2hyb21lIiwiZnJhZ21lbnQiOiIiLCJoZWFkZXJUeXBlIjoibm9uZSIsImhvc3QiOiIiLCJpZCI6ImZkMTY5YTBhLTVjMzItNGYzZS05YjZjLTI4ZGQzNWYyYTVlNSIsIm1vZGUiOiIiLCJuZXQiOiJ0Y3AiLCJwYXRoIjoiIiwicG9ydCI6IjIwNTMiLCJwcyI6IvCfj7TigI1TaGluZSIsInNlZWQiOiIiLCJzZXJ2aWNlTmFtZSI6Im5vbmUiLCJzbmkiOiIiLCJ0bHMiOiJ0bHMiLCJ0eXBlIjoibm9uZSIsInYiOiIyIiwic2tpcC1jZXJ0LXZlcmlmeSI6dHJ1ZX0=ShineNET VPN ⚡️
-
-ss://YWVzLTEyOC1nY206c2hhZG93c29ja3M@149.22.87.241:443#🇯🇵ShineNET VPN ⚡️
-
-vless://d6d7e024-0a49-483d-bcd7-048c4d30eca6@159.89.194.243:22539?encryption=none&type=tcp&headerType=none&security=tls&sni=node1.nanonet.host#🇸🇬ShineNET VPN ⚡️
-
-vless://a6f1755f-0140-4bea-8727-0db1bed7c4df@162.159.18.105:443?allowInsecure=1&encryption=none&host=juzi.qea.ccwu.cc&path=%2F&security=tls&sni=juzi.qea.ccwu.cc&type=ws#🇸🇬ShineNET VPN ⚡️
-
-trojan://humanity@104.21.40.34:443?path=%2Fassignment&security=tls&insecure=1&host=www.gossipglove.com&type=ws&allowInsecure=1&sni=www.gossipglove.com#🇫🇷ShineNET VPN ⚡️
-
-vless://5e8c894b-1efa-48d4-85ee-9daf5d574c16@45.130.125.69:2096?sni=bad-AppLicatIon22nBd8j5OK.CArBoNbLaCkBmw.Ir&alpn=h2%2Chttp/1.1&type=grpc&serviceName=irannewsdaily.com.hamshahrionline.ir.irdiplomacy.ir.irandaily.ir.alef.ir.rajanews.com.irannewsdaily.com&fp=chrome&security=tls#🇩🇪ShineNET VPN ⚡️
-
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpvWklvQTY5UTh5aGNRVjhrYTNQYTNB@82.38.31.35:8080#🇳🇱ShineNET VPN ⚡️
-
-vmess://eyJhZGQiOiIzOC45MS4xMDcuNDkiLCJhaWQiOiIwIiwiYWxwbiI6IiIsImZwIjoiIiwiaG9zdCI6IiIsImlkIjoiZjhjOGRjM2QtMGQzNy00NmIwLThiMzQtYTcyMzI4ODJmY2ZlIiwibmV0IjoidGNwIiwicGF0aCI6IiIsInBvcnQiOiIxODAwMCIsInBzIjoi8J+PtOKAjVNoaW5lIiwic2N5IjoiYXV0byIsInNuaSI6IiIsInRscyI6IiIsInR5cGUiOiJub25lIiwidiI6IjIiLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlfQ==ShineNET VPN ⚡️
-
-vmess://eyJhZGQiOiI4Mi4xOTguMjQ2LjkiLCJhaWQiOiIwIiwiYWxwbiI6IiIsImZwIjoiIiwiaG9zdCI6IkBQcm94eVZQTjExIiwiaWQiOiJkMTNmYzJmNS0zZTA1LTQ3OTUtODFlYi00NDE0M2EwOWU1NTIiLCJpbnNlY3VyZSI6IjEiLCJuZXQiOiJ0Y3AiLCJwYXRoIjoiL0BQcm94eVZQTjExIiwicG9ydCI6IjE4MCIsInBzIjoi8J+PtOKAjVNoaW5lIiwic2N5IjoiYXV0byIsInNuaSI6IiIsInRscyI6IiIsInR5cGUiOiJub25lIiwidiI6IjIiLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlfQ==ShineNET VPN ⚡️
-
-vmess://eyJhZGQiOiIxNzIuMjMyLjEwMy4xODYiLCJhaWQiOiIwIiwiYWxwbiI6IiIsImZwIjoiIiwiaG9zdCI6IiIsImlkIjoiMDQ2MjFiYWUtYWIzNi0xMWVjLWI5MDktMDI0MmFjMTIwMDAyIiwibmV0IjoidGNwIiwicGF0aCI6IiIsInBvcnQiOiIyMjMyNCIsInBzIjoi8J+PtOKAjVNoaW5lIiwic2N5IjoiYXV0byIsInNuaSI6IiIsInRscyI6IiIsInR5cGUiOiJub25lIiwidiI6IjIiLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlfQ==ShineNET VPN ⚡️
-
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTprMWRCT21PQjRvcWk3VW1wMzdhMWJR@82.38.31.184:8080#🇳🇱ShineNET VPN ⚡️
-
-vmess://eyJhZGQiOiIyMy4xNjIuMjAwLjE5OCIsImFpZCI6IjAiLCJhbHBuIjpudWxsLCJmcCI6bnVsbCwiaG9zdCI6IiIsImlkIjoiZjhjOGRjM2QtMGQzNy00NmIwLThiMzQtYTcyMzI4ODJmY2ZlIiwibmV0IjoidGNwIiwicGF0aCI6Ii8iLCJwb3J0IjoxODAwMCwicHMiOiLwn4+04oCNU2hpbmUiLCJzY3kiOm51bGwsInNraXAtY2VydC12ZXJpZnkiOnRydWUsInNuaSI6bnVsbCwidGxzIjoiIiwidHlwZSI6bnVsbCwidiI6bnVsbH0=ShineNET VPN ⚡️
-
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTprMWRCT21PQjRvcWk3VW1wMzdhMWJR@82.38.31.202:8080#🇳🇱ShineNET VPN ⚡️
-
-vmess://eyJhZGQiOiI2Ny4yMjAuODUuNDYiLCJhaWQiOiIwIiwiaWQiOiJmOGM4ZGMzZC0wZDM3LTQ2YjAtOGIzNC1hNzIzMjg4MmZjZmUiLCJuZXQiOiJ0Y3AiLCJwb3J0IjoiMTgwMDAiLCJwcyI6IvCfj7TigI1TaGluZSIsInNjeSI6ImFlcy0xMjgtZ2NtIiwic2tpcC1jZXJ0LXZlcmlmeSI6dHJ1ZSwidGxzIjoiIiwidHlwZSI6IiIsInYiOiIyIn0=ShineNET VPN ⚡️
-
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpvWklvQTY5UTh5aGNRVjhrYTNQYTNB@82.38.31.155:8080#🇳🇱ShineNET VPN ⚡️
-
-vmess://eyJhZGQiOiJjZi5zY3BuYi50b3AiLCJhaWQiOiIwIiwiYWxwbiI6IiIsImZwIjoiY2hyb21lIiwiaG9zdCI6InBsYXlzdGF0aW9uLXNjaGVtYS1jb2xsZWN0aW9ucy1lcXVpbGlicml1bS50cnljbG91ZGZsYXJlLmNvbSIsImlkIjoiNmQyOGU3M2EtYTE4NC00YjZhLWFiNWEtZWZjMjk4MGQzOGZjIiwibmV0Ijoid3MiLCJwYXRoIjoiLzZkMjhlNzNhLWExODQtNGI2YS1hYjVhLWVmYzI5ODBkMzhmYy12bSIsInBvcnQiOiI0NDMiLCJwcyI6IvCfj7TigI1TaGluZSIsInNjeSI6ImF1dG8iLCJzbmkiOiJwbGF5c3RhdGlvbi1zY2hlbWEtY29sbGVjdGlvbnMtZXF1aWxpYnJpdW0udHJ5Y2xvdWRmbGFyZS5jb20iLCJ0bHMiOiJ0bHMiLCJ0eXBlIjoibm9uZSIsInYiOiIyIiwic2tpcC1jZXJ0LXZlcmlmeSI6dHJ1ZX0=ShineNET VPN ⚡️
-
-vmess://eyJhZGQiOiI2Ny4yMjAuOTUuMyIsImFpZCI6MCwiaWQiOiJmOGM4ZGMzZC0wZDM3LTQ2YjAtOGIzNC1hNzIzMjg4MmZjZmUiLCJuZXQiOiJ0Y3AiLCJwb3J0IjoxODAwMCwicHMiOiLwn4+04oCNU2hpbmUiLCJzY3kiOiJhZXMtMTI4LWdjbSIsInNraXAtY2VydC12ZXJpZnkiOnRydWUsInRscyI6IiIsInR5cGUiOiJub25lIiwidiI6IjIifQ==ShineNET VPN ⚡️
-
-vmess://eyJhZGQiOiIyMTYuMTA2LjE4My4zNSIsImFpZCI6IjAiLCJhbHBuIjpudWxsLCJmcCI6ImNocm9tZSIsImhvc3QiOiIiLCJpZCI6IjA0NjIxYmFlLWFiMzYtMTFlYy1iOTA5LTAyNDJhYzEyMDAwMiIsIm5hbWUiOiLwn4e68J+HuCBVUyAxMSIsIm5ldCI6InRjcCIsInBhdGgiOiIvIiwicG9ydCI6MjIzMjQsInBzIjoi8J+PtOKAjVNoaW5lIiwic2N5IjoiYXV0byIsInNraXAtY2VydC12ZXJpZnkiOnRydWUsInNuaSI6bnVsbCwidGxzIjoiIiwidHlwZSI6bnVsbCwidiI6bnVsbH0=ShineNET VPN ⚡️
-
-vmess://eyJhZGQiOiIxNjUuMTQwLjIxNi4xNDEiLCJhaWQiOiIwIiwiYWxwbiI6IiIsImZwIjoiIiwiaG9zdCI6IiIsImlkIjoiZTdkNzJhOGQtMjZmMi00YjU0LWIzNjYtMGM0M2UwYmNiYTdkIiwibmV0IjoidGNwIiwicGF0aCI6IiIsInBvcnQiOiI0NDMiLCJwcyI6IvCfj7TigI1TaGluZSIsInNjeSI6ImF1dG8iLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlLCJzbmkiOiIiLCJ0bHMiOiIiLCJ0eXBlIjoibm9uZSIsInYiOiIyIn0=ShineNET VPN ⚡️
-
-vless://a5e746f7-328f-4b65-a65f-e2e2a4a5b1a9@midorinote.ru:8443?security=reality&encryption=none&pbk=wNcFqVd4_PkgJbfgJJeouSU6Pn_Swuce4q4Chw5T0hY&headerType=none&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=tradingview.com&sid=f7aa9e61197d3ac6#🇳🇱ShineNET VPN ⚡️
-
-vmess://eyJhZGQiOiIxNjkuMTk3LjE0Mi4yMiIsImFpZCI6IjAiLCJhbHBuIjoiIiwiZnAiOiIiLCJob3N0IjoiIiwiaWQiOiJmOGM4ZGMzZC0wZDM3LTQ2YjAtOGIzNC1hNzIzMjg4MmZjZmUiLCJuZXQiOiJ0Y3AiLCJwYXRoIjoiIiwicG9ydCI6IjE4MDAwIiwicHMiOiLwn4+04oCNU2hpbmUiLCJzY3kiOiJhdXRvIiwic25pIjoiIiwidGxzIjoiIiwidHlwZSI6Im5vbmUiLCJ2IjoiMiIsInNraXAtY2VydC12ZXJpZnkiOnRydWV9ShineNET VPN ⚡️
-
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpRVG1MVmlVNFZFbXV3Yk94VXc0SVhk@107.172.250.161:59556#🇺🇸ShineNET VPN ⚡️
-
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTprN3hXNk41U0FWcGdlcWkxd2Q3czd5eEQ3UzhQeGFlaFVNNVc4YXBIclFpM3BTb0RSWFNjb0FQazhTVmE0bUtidlJqcmdFTlUzZFVnelRncDlUM3JyWGluYURlNENYWWs@185.5.38.111:55988#🇫🇮ShineNET VPN ⚡️
-
-vmess://eyJhZGQiOiIyMTYuMjM4Ljg2LjE1OCIsImlkIjoiOTBiZTIxNGQtMDQ4Yy00ZWEyLWE2MDItYjhlNGQ0ZTUxZTM2IiwibmV0IjoidGNwIiwicG9ydCI6MzQ0NjAsInBzIjoi8J+PtOKAjVNoaW5lIiwic2tpcC1jZXJ0LXZlcmlmeSI6dHJ1ZSwidHlwZSI6Im5vbmUiLCJ2IjoiMiJ9ShineNET VPN ⚡️
-
-vmess://eyJ2IjoiMiIsInBzIjoi8J+PtOKAjVNoaW5lIiwiYWRkIjoiMTY1LjE0MC4yMTYuMTQxIiwicG9ydCI6IjQ0MyIsImlkIjoiZTdkNzJhOGQtMjZmMi00YjU0LWIzNjYtMGM0M2UwYmNiYTdkIiwiYWlkIjoiMCIsInNjeSI6ImF1dG8iLCJuZXQiOiJ0Y3AiLCJ0eXBlIjoibm9uZSIsImhvc3QiOiIiLCJwYXRoIjoiIiwidGxzIjoiIiwic25pIjoiIiwidGVzdF9uYW1lIjoiMTgiLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlfQ==ShineNET VPN ⚡️
-
-vmess://eyJhZGQiOiIxNjUuMTQwLjIxNi4xNDEiLCJhaWQiOiIwIiwiYWxwbiI6IiIsImZwIjoiIiwiaG9zdCI6IiIsImlkIjoiZTdkNzJhOGQtMjZmMi00YjU0LWIzNjYtMGM0M2UwYmNiYTdkIiwibmFtZSI6Ij4+QHYycmF5X2NvbmZpZ3NfcG9vbDo6VVMiLCJuZXQiOiJ0Y3AiLCJwYXRoIjoiIiwicG9ydCI6NDQzLCJwcyI6IvCfj7TigI1TaGluZSIsInNjeSI6ImF1dG8iLCJzbmkiOiIiLCJ0bHMiOiIiLCJ0eXBlIjoibm9uZSIsInYiOiIyIiwic2tpcC1jZXJ0LXZlcmlmeSI6dHJ1ZX0=ShineNET VPN ⚡️
+vmess://eyJhZGQiOiIxMDQuMTcuNzcuNzciLCJhbHBuIjoiIiwiaG9zdCI6InYycmF5MS5kb3phcHAueHl6IiwiaWQiOiI2MDQ0MTU0OC1iNjhlLTQzYjItODE5MS1lM2I4ODRiZTRiM2MiLCJuZXQiOiJ3cyIsInBhdGgiOiIvbE1uc1pVTjQvIiwicG9ydCI6Ijg0NDMiLCJwcyI6IvCfj7TigI1TaGluZSIsInNjeSI6Im5vbmUiLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlLCJzbmkiOiJ2MnJheTEuZG96YXBwLnh5eiIsInRscyI6InRscyJ9ShineNET VPN ⚡️
 
 vless://c9fd0fb1-8251-4106-b09a-f4b426736f67@137.184.218.169:36925?security=reality&encryption=none&pbk=lJ9INPpO4rdnm2Tek_yg0PGFyUrBB6MoKyvqt_Mfqm0&headerType=none&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=www.cloudflare.com#🇺🇸ShineNET VPN ⚡️
 
-vmess://eyJhZGQiOiI4NC4xNy40MS4yIiwiYWlkIjoiMCIsImFscG4iOm51bGwsImZwIjpudWxsLCJob3N0IjpudWxsLCJpZCI6ImY4YzhkYzNkLTBkMzctNDZiMC04YjM0LWE3MjMyODgyZmNmZSIsIm5hbWUiOiLwn4e68J+HuCBVUyAyIiwibmV0IjoidGNwIiwicGF0aCI6Ii8iLCJwb3J0IjoxODAwMCwicHMiOiLwn4+04oCNU2hpbmUiLCJzY3kiOiJhdXRvIiwic25pIjpudWxsLCJ0bHMiOiIiLCJ0eXBlIjpudWxsLCJ2IjpudWxsLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlfQ==ShineNET VPN ⚡️
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTprMWRCT21PQjRvcWk3VW1wMzdhMWJR@82.38.31.210:8080#🇳🇱ShineNET VPN ⚡️
 
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpSTllSZlUxTHNuUDJUVjRxMGJUNEtK@5.253.59.156:32140#🇳🇱ShineNET VPN ⚡️
+vless://9f0285ee-20ca-4953-bcdb-86a920652923@204.216.216.23:10086?encryption=none&security=none&type=tcp#🇮🇹ShineNET VPN ⚡️
 
-vmess://eyJhZGQiOiI4Mi4xOTguMjQ2LjI1MCIsImFpZCI6IjAiLCJob3N0IjoiIiwiaWQiOiJkMTNmYzJmNS0zZTA1LTQ3OTUtODFlYi00NDE0M2EwOWU1NTIiLCJuZXQiOiJ0Y3AiLCJwYXRoIjoiLyIsInBvcnQiOiIxODAiLCJwcyI6IvCfj7TigI1TaGluZSIsInRscyI6IiIsInR5cGUiOiJub25lIiwidiI6IjIiLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlfQ==ShineNET VPN ⚡️
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpBUmd2R1p5d0ErZ2FjZ0dWMjZCdm11MDUrd1ptUlcvaitBZFUrWjhCdDQ0PQ==@193.135.174.135:990#??ShineNET VPN ⚡️
 
-vmess://eyJhZGQiOiIyMTYuMTA2LjE4NS4xNDEiLCJhaWQiOiIwIiwiYWxwbiI6bnVsbCwiZnAiOm51bGwsImhvc3QiOiIiLCJpZCI6IjA0NjIxYmFlLWFiMzYtMTFlYy1iOTA5LTAyNDJhYzEyMDAwMiIsIm5hbWUiOiLwn4e68J+HuCBVUyA2NyIsIm5ldCI6InRjcCIsInBhdGgiOiIvIiwicG9ydCI6MjIzMjQsInBzIjoi8J+PtOKAjVNoaW5lIiwic2N5IjpudWxsLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlLCJzbmkiOm51bGwsInRscyI6IiIsInR5cGUiOm51bGwsInYiOm51bGx9ShineNET VPN ⚡️
+trojan://humanity@www.multiplydose.com:443?path=/assignment&security=tls&fp=chrome&type=ws&sni=www.multiplydose.com#🇳🇱ShineNET VPN ⚡️
 
-vmess://eyJhZGQiOiIxNjUuMTQwLjIxNi4xNDEiLCJhaWQiOiIwIiwiaG9zdCI6IiIsImlkIjoiZTdkNzJhOGQtMjZmMi00YjU0LWIzNjYtMGM0M2UwYmNiYTdkIiwibmV0IjoidGNwIiwicGF0aCI6IiIsInBvcnQiOiI0NDMiLCJwcyI6IvCfj7TigI1TaGluZSIsInNjeSI6ImF1dG8iLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlLCJzbmkiOiIiLCJ0ZXN0X25hbWUiOiIyIiwidGxzIjoiIiwidHlwZSI6Im5vbmUiLCJ2IjoiMiJ9ShineNET VPN ⚡️
-
-vless://394f6981-a782-4779-9a85-e6cf22935d93@152.233.28.198:8443?alpn=h2&encryption=none&security=tls&sni=uk1.fromblancwithlove.com&type=tcp#🇬🇧ShineNET VPN ⚡️
-
-vmess://eyJhZGQiOiIxNjUuMTQwLjIxNi4xNDEiLCJhaWQiOiIwIiwiYWxwbiI6IiIsImZwIjoiIiwiaG9zdCI6IiIsImlkIjoiZTdkNzJhOGQtMjZmMi00YjU0LWIzNjYtMGM0M2UwYmNiYTdkIiwibmV0IjoidGNwIiwicGF0aCI6IiIsInBvcnQiOiI0NDMiLCJwcyI6IvCfj7TigI1TaGluZSIsInNjeSI6ImF1dG8iLCJzbmkiOiIiLCJ0bHMiOiIiLCJ0eXBlIjoibm9uZSIsInYiOiIyIiwic2tpcC1jZXJ0LXZlcmlmeSI6dHJ1ZX0=ShineNET VPN ⚡️
-
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpkN3poMmxNclhOSDUrOCs4cEt6bHhpQ1U5Tk4wMjJpaCt1QXl4ajVkNHFvPQ@102.129.229.85:31700#🇹🇭ShineNET VPN ⚡️
-
-vmess://eyJhZGQiOiIxNjUuMTQwLjIxNi4xNDEiLCJhaWQiOiIwIiwiaG9zdCI6IiIsImlkIjoiZTdkNzJhOGQtMjZmMi00YjU0LWIzNjYtMGM0M2UwYmNiYTdkIiwibmV0IjoidGNwIiwicGF0aCI6IiIsInBvcnQiOiI0NDMiLCJwcyI6IvCfj7TigI1TaGluZSIsInNjeSI6ImF1dG8iLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlLCJzbmkiOiIiLCJ0ZXN0X25hbWUiOiIyMyIsInRscyI6IiIsInR5cGUiOiJub25lIiwidiI6IjIifQ==ShineNET VPN ⚡️
-
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpHeVo1WG8waHQ0MXZZbVczSDQ@149.28.255.6:816#🇺🇸ShineNET VPN ⚡️
-
-vless://2001daf3-5c56-4bef-8ea6-8dd0493c5a4c@144.31.207.111:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=www.deepl.com&fp=chrome&pbk=ZHEMPjSWslk6_qD2JNQzd5enUPz8nY9mYRRuM6NkZmU&sid=1a&type=tcp&headerType=none#🇺🇸ShineNET VPN ⚡️
+vmess://eyJhZGQiOiIxNjIuMjE3LjI0OS43NCIsImFpZCI6IjAiLCJhbHBuIjoiIiwiZnAiOiIiLCJob3N0IjoiIiwiaWQiOiI1Njc4YjAwZi05ZWQ2LTQ5ODItOWY4YS0xYTczMDZlMjUxMjYiLCJpbnNlY3VyZSI6IjAiLCJuZXQiOiJ0Y3AiLCJwYXRoIjoiIiwicG9ydCI6IjQ1NzA1IiwicHMiOiLwn4+04oCNU2hpbmUiLCJzY3kiOiJhdXRvIiwic25pIjoiIiwidGxzIjoibm9uZSIsInR5cGUiOiIiLCJ2IjoiMiIsInNraXAtY2VydC12ZXJpZnkiOnRydWV9ShineNET VPN ⚡️
 
 vless://a6f1755f-0140-4bea-8727-0db1bed7c4df@162.159.13.206:443?allowInsecure=1&encryption=none&host=juzi.qea.ccwu.cc&path=%2F&security=tls&sni=juzi.qea.ccwu.cc&type=ws#🇸🇬ShineNET VPN ⚡️
 
-trojan://humanity@43.169.18.179:443?path=/assignment&security=tls&insecure=0&host=www.creationlong.org&type=ws&allowInsecure=0&sni=www.creationlong.org#🇵🇱ShineNET VPN ⚡️
+ss://YWVzLTI1Ni1nY206ZmFCQW9ENTRrODdVSkc3@185.123.101.64:2376#🇹🇷ShineNET VPN ⚡️
 
-vless://e258977b-e413-4718-a3af-02d75492c349@69.84.182.49:2096?encryption=none&type=ws&security=tls&path=/&host=jp.aniua.qzz.io&sni=jp.aniua.qzz.io&allowInsecure=0#🇸🇬ShineNET VPN ⚡️
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTprMWRCT21PQjRvcWk3VW1wMzdhMWJR@82.38.31.190:8080#🇳🇱ShineNET VPN ⚡️
 
-vless://b852270a-1283-4ea8-8a2f-5bae8e644a3e@38.55.146.153:13000?encryption=none&security=none&type=tcp#🇺🇸ShineNET VPN ⚡️
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpBUmd2R1p5d0ErZ2FjZ0dWMjZCdm11MDUrd1ptUlcvaitBZFUrWjhCdDQ0PQ==@193.135.174.135:990#🇩🇰ShineNET VPN ⚡️
 
-vmess://eyJhZGQiOiIxNjUuMTQwLjIxNi4xNDEiLCJhaWQiOiIwIiwiYWxwbiI6IiIsImZwIjoiIiwiaG9zdCI6IiIsImlkIjoiZTdkNzJhOGQtMjZmMi00YjU0LWIzNjYtMGM0M2UwYmNiYTdkIiwibmFtZSI6IkNoYW5uZWwgOiBARnJlZUNvbmZpZ0ZvcllvdfCfj7Twn4+zIiwibmV0IjoidGNwIiwicGF0aCI6IiIsInBvcnQiOjQ0MywicHMiOiLwn4+04oCNU2hpbmUiLCJzY3kiOiJhdXRvIiwic25pIjoiIiwidGxzIjoiIiwidHlwZSI6Im5vbmUiLCJ2IjoiMiIsInNraXAtY2VydC12ZXJpZnkiOnRydWV9ShineNET VPN ⚡️
+vless://16c6faa4-1162-49ca-acf7-059afdf1ecd3@91.107.189.143:29039?encryption=none&security=none&type=tcp#🇩🇪ShineNET VPN ⚡️
 
-vmess://eyJhZGQiOiJuMTc1MzM1NjM3OC40dTltYS5pY3UiLCJhaWQiOjAsImhvc3QiOiJuMTc1MzM1NjM3OC40dTltYS5pY3UiLCJpZCI6IjM3YjIwNjM5LTBkNmUtNDZmMi05ZGI1LTQ3MjIwMWIxMGNkZCIsIm5ldCI6IndzIiwicGF0aCI6Ii8iLCJwb3J0Ijo0NDMsInBzIjoi8J+PtOKAjVNoaW5lIiwic2VjdXJpdHkiOiJhdXRvIiwic2tpcC1jZXJ0LXZlcmlmeSI6dHJ1ZSwic25pIjoibjE3NTMzNTYzNzguNHU5bWEuaWN1IiwidGxzIjoidGxzIiwidHlwZSI6ImF1dG8ifQ==ShineNET VPN ⚡️
+vmess://eyJhZGQiOiIxNTIuNjcuOC4yMDUiLCJhaWQiOiIwIiwiZnAiOiJjaHJvbWUiLCJob3N0IjoiMTUyLjY3LjguMjA1IiwiaWQiOiI5ZGI0YzcwOC1hZWY4LTQzNTktODIxYi0zOGU0Nzk5MGJlMGQiLCJuZXQiOiJ3cyIsInBhdGgiOiIvIiwicG9ydCI6IjgwIiwicHMiOiLwn4+04oCNU2hpbmUiLCJzY3kiOiJhdXRvIiwidGxzIjoiIiwidHlwZSI6Im5vbmUiLCJ2IjoiMiIsInNraXAtY2VydC12ZXJpZnkiOnRydWV9ShineNET VPN ⚡️
 
-trojan://humanity@172.66.47.69:443?path=/assignment&security=tls&insecure=0&host=www.multiplydose.com&type=ws&allowInsecure=0&sni=www.multiplydose.com#🇳🇱ShineNET VPN ⚡️
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpvWklvQTY5UTh5aGNRVjhrYTNQYTNB@82.38.31.35:8080#🇳🇱ShineNET VPN ⚡️
 
-vmess://eyJhZGQiOiI2Ny4yMjAuNzIuMjM3IiwiYWlkIjoiMCIsImFscG4iOm51bGwsImZwIjoiY2hyb21lIiwiaG9zdCI6IiIsImlkIjoiMDQ2MjFiYWUtYWIzNi0xMWVjLWI5MDktMDI0MmFjMTIwMDAyIiwibmFtZSI6IvCfh7rwn4e4IFVTIDQzIiwibmV0IjoidGNwIiwicGF0aCI6Ii8iLCJwb3J0IjoyMjMyNCwicHMiOiLwn4+04oCNU2hpbmUiLCJzY3kiOiJhdXRvIiwic2tpcC1jZXJ0LXZlcmlmeSI6dHJ1ZSwic25pIjpudWxsLCJ0bHMiOiIiLCJ0eXBlIjpudWxsLCJ2IjpudWxsfQ==ShineNET VPN ⚡️
+vmess://eyJhZGQiOiI1MS44My4xOTcuMTQwIiwiYWlkIjoiMCIsImFscG4iOiIiLCJmcCI6IiIsImhvc3QiOiIiLCJpZCI6IjdkOGMyOTA0LTA5MTctNDAwMi1iZmY5LTlhNDRlMWM5MmZiMSIsIm5ldCI6IndzIiwicGF0aCI6Ii9hcGkvdjEiLCJwb3J0IjoiODAiLCJwcyI6IvCfj7TigI1TaGluZSIsInNjeSI6ImF1dG8iLCJzbmkiOiIiLCJ0bHMiOiJub25lIiwidHlwZSI6Im5vbmUiLCJ2IjoiMiIsInNraXAtY2VydC12ZXJpZnkiOnRydWV9ShineNET VPN ⚡️
 
-vmess://eyJhZGQiOiI4Mi4xOTguMjQ2LjM3IiwiYWlkIjoiMCIsImhvc3QiOiJhZHMueDUucnUiLCJpZCI6ImQxM2ZjMmY1LTNlMDUtNDc5NS04MWViLTQ0MTQzYTA5ZTU1MiIsIm5ldCI6InRjcCIsInBhdGgiOiIvIiwicG9ydCI6IjE4MCIsInBzIjoi8J+PtOKAjVNoaW5lIiwidGxzIjoiIiwidHlwZSI6Im5vbmUiLCJ2IjoiMiIsInNraXAtY2VydC12ZXJpZnkiOnRydWV9ShineNET VPN ⚡️
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTprMWRCT21PQjRvcWk3VW1wMzdhMWJR@82.38.31.179:8080#🇳🇱ShineNET VPN ⚡️
 
-vmess://eyJhZGQiOiJuMTc1MzM0ODczNi5saWU1ZC5jeW91IiwiYWlkIjowLCJhbGxvd0luc2VjdXJlIjoiMCIsImFsbG93X2luc2VjdXJlIjoiMCIsImhvc3QiOiJuMTc1MzM0ODczNi5saWU1ZC5jeW91IiwiaWQiOiJmMjY3ZWFjMy1kZmI0LTQ1YmUtYTQ4MC03ZTE4NDdjYTA0YWIiLCJpbnNlY3VyZSI6IjAiLCJuZXQiOiJ3cyIsInBhdGgiOiIvIiwicG9ydCI6NDQzLCJwcyI6IvCfj7TigI1TaGluZSIsInNlY3VyaXR5IjoiYXV0byIsInRscyI6InRscyIsInNraXAtY2VydC12ZXJpZnkiOnRydWV9ShineNET VPN ⚡️
+vmess://eyJ2IjoiMiIsInBzIjoi8J+PtOKAjVNoaW5lIiwiYWRkIjoiODIuMTk4LjI0Ni4yNTAiLCJwb3J0IjoiMTgwIiwidHlwZSI6Im5vbmUiLCJpZCI6ImQxM2ZjMmY1LTNlMDUtNDc5NS04MWViLTQ0MTQzYTA5ZTU1MiIsImFpZCI6IjAiLCJuZXQiOiJ0Y3AiLCJwYXRoIjoiLyIsImhvc3QiOiJ0Lm1lJTI1MkZyaXBhb2ppZWRpYW4iLCJ0bHMiOiIiLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlfQ==ShineNET VPN ⚡️
+
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTprMWRCT21PQjRvcWk3VW1wMzdhMWJR@82.38.31.202:8080#🇳🇱ShineNET VPN ⚡️
+
+vless://478cc26d-16b3-4fdd-be64-60d5a58c1622@172.64.147.255:80?path=%2F&security=none&encryption=none&host=tt.andishehparenting.com&type=ws#🇩🇪ShineNET VPN ⚡️
+
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTprMWRCT21PQjRvcWk3VW1wMzdhMWJR@82.38.31.199:8080#🇳🇱ShineNET VPN ⚡️
+
+vmess://eyJhZGQiOiJwcS1IdW5nYXJ5MS4wOXZwbi5jb20iLCJhaWQiOiIwIiwiYWxwbiI6IiIsImZwIjoiIiwiaG9zdCI6IiIsImlkIjoiNzAzZjcyMmEtNGJkZi00ZTlkLTlhZmQtYTY4MWZkZjg3Yzc0IiwiaW5zZWN1cmUiOiIwIiwibmV0Ijoid3MiLCJwYXRoIjoiL3ZtZXNzLyIsInBvcnQiOiI4MCIsInBzIjoi8J+PtOKAjVNoaW5lIiwic2N5IjoiYXV0byIsInNuaSI6IiIsInRscyI6Im5vbmUiLCJ0eXBlIjoibm9uZSIsInYiOiIyIiwic2tpcC1jZXJ0LXZlcmlmeSI6dHJ1ZX0=ShineNET VPN ⚡️
+
+vless://629325d2-7e7b-47e8-a503-301677a59589@104.18.32.47:2096?mode=gun&security=tls&alpn=h2,http/1.1&encryption=none&insecure=0&fp=chrome&type=grpc&serviceName=khabaronline.ir.iranprimer.usip.org.entekhab.ir.alalamtv.net.kayhan.ir.fararu.com.irna.ir&allowInsecure=0&sni=poWeRFUL-HIStORym1zX7jVJwb.cARbonbLAckBmw.Ir#🇩🇪ShineNET VPN ⚡️
+
+vmess://eyJ2IjoiMiIsInBzIjoi8J+PtOKAjVNoaW5lIiwiYWRkIjoiODIuMTk4LjI0Ni4zNyIsInBvcnQiOiIxODAiLCJ0eXBlIjoibm9uZSIsImlkIjoiZDEzZmMyZjUtM2UwNS00Nzk1LTgxZWItNDQxNDNhMDllNTUyIiwiYWlkIjoiMCIsIm5ldCI6InRjcCIsInBhdGgiOiIvIiwiaG9zdCI6ImpwMi04c2IuNjEyMTk5OS5kcGRucy5vcmciLCJ0bHMiOiIiLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlfQ==ShineNET VPN ⚡️
+
+vmess://eyJ2IjoiMiIsInBzIjoi8J+PtOKAjVNoaW5lIiwiYWRkIjoiMTY1LjE0MC4yMTYuMTQxIiwicG9ydCI6IjQ0MyIsImlkIjoiZTdkNzJhOGQtMjZmMi00YjU0LWIzNjYtMGM0M2UwYmNiYTdkIiwiYWlkIjoiMCIsInNjeSI6ImF1dG8iLCJuZXQiOiJ0Y3AiLCJ0eXBlIjoibm9uZSIsImhvc3QiOiIiLCJwYXRoIjoiIiwidGxzIjoiIiwic25pIjoiIiwidGVzdF9uYW1lIjoiMTgiLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlfQ==ShineNET VPN ⚡️
+
+vmess://eyJhZGQiOiJub2RlLWRlLmNvbm5lY3RzdWl0ZS5vcmciLCJhaWQiOiIwIiwiYWxwbiI6ImgyLGh0dHAvMS4xIiwiYXV0aG9yaXR5IjoiIiwiZGV2aWNlSUQiOiIiLCJleHRyYSI6IiIsImZwIjoiY2hyb21lIiwiZnJhZ21lbnQiOiIiLCJoZWFkZXJUeXBlIjoibm9uZSIsImhvc3QiOiIiLCJpZCI6ImZkMTY5YTBhLTVjMzItNGYzZS05YjZjLTI4ZGQzNWYyYTVlNSIsIm1vZGUiOiIiLCJuZXQiOiJ0Y3AiLCJwYXRoIjoiIiwicG9ydCI6IjIwNTMiLCJwcyI6IvCfj7TigI1TaGluZSIsInNlZWQiOiIiLCJzZXJ2aWNlTmFtZSI6Im5vbmUiLCJzbmkiOiIiLCJ0bHMiOiJ0bHMiLCJ0eXBlIjoibm9uZSIsInYiOiIyIiwic2tpcC1jZXJ0LXZlcmlmeSI6dHJ1ZX0=ShineNET VPN ⚡️
+
+vmess://eyJhZGQiOiI0NS4xNS4xNzAuMjM3IiwiYWlkIjoiMCIsImFscG4iOiIiLCJmcCI6IiIsImhvc3QiOiJwZWxhbmcub3JnIiwiaWQiOiI4MjBkNGI0Zi0zMzU3LTRkYzctOTM4MS02ZTVmZDUyYjVmMzkiLCJpbnNlY3VyZSI6IjAiLCJuZXQiOiJ3cyIsInBhdGgiOiIvdm1lc3MvIiwicG9ydCI6IjgwIiwicHMiOiLwn4+04oCNU2hpbmUiLCJzY3kiOiJhdXRvIiwic25pIjoiIiwidGxzIjoiIiwidHlwZSI6Ii0tLSIsInYiOiIyIiwic2tpcC1jZXJ0LXZlcmlmeSI6dHJ1ZX0=ShineNET VPN ⚡️
+
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo3ZTczMWVjMy1mOGUxLTQzZjYtOTJjZi0zOTc4ZDE0NzA1YzQ@r3mrcg007117fb8.cybervena.com:50099#🇹🇼ShineNET VPN ⚡️
+
+vless://e258977b-e413-4718-a3af-02d75492c349@172.64.47.168:2096?encryption=none&host=jp.aniua.qzz.io&path=/&security=tls&sni=jp.aniua.qzz.io&type=ws#🇸🇬ShineNET VPN ⚡️
+
+vless://a6f1755f-0140-4bea-8727-0db1bed7c4df@162.159.17.189:443?allowInsecure=1&encryption=none&host=juzi.qea.ccwu.cc&path=%2F&security=tls&sni=juzi.qea.ccwu.cc&type=ws#🇸🇬ShineNET VPN ⚡️
+
+vless://a6f1755f-0140-4bea-8727-0db1bed7c4df@104.17.156.197:443?allowInsecure=1&encryption=none&host=juzi.qea.ccwu.cc&path=%2F&security=tls&sni=juzi.qea.ccwu.cc&type=ws#🇸🇬ShineNET VPN ⚡️
+
+vless://ae852d97-85f5-45cf-82a4-254eba345480@cdn.cdnjst.org:443?security=reality&encryption=none&pbk=djH9iD2QV748ocK-wPH7HvDd03lu88zHhS4G-61w6Dc&headerType=none&fp=chrome&spx=%2F&type=tcp&flow=xtls-rprx-vision&sni=cdn.cdnjst.org&sid=a120#🇦🇱ShineNET VPN ⚡️
+
+vmess://eyJ2IjoiMiIsInBzIjoi8J+PtOKAjVNoaW5lIiwiYWRkIjoiZ3RtLXNnLWNjNTRxN2QxcTAxLjM2NWNsb3VkMDI4NS5jb20iLCJwb3J0IjoiNjAwMSIsInR5cGUiOiJub25lIiwiaWQiOiJhMDMwODQyYS1kMjlhLTRlYTktYTc3Ni0xNGZjNGI5ZTEwMmQiLCJhaWQiOiIwIiwibmV0IjoidGNwIiwicGF0aCI6Ii8iLCJob3N0IjoiZ3RtLXNnLWNjNTRxN2QxcTAxLjM2NWNsb3VkMDI4NS5jb20iLCJ0bHMiOiIiLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlfQ==ShineNET VPN ⚡️
+
+vless://a6f1755f-0140-4bea-8727-0db1bed7c4df@104.17.150.241:443?allowInsecure=1&encryption=none&host=juzi.qea.ccwu.cc&path=%2F&security=tls&sni=juzi.qea.ccwu.cc&type=ws#🇸🇬ShineNET VPN ⚡️
+
+vmess://eyJhZGQiOiJoZXU4M3VqaWVpd29ldTgzajJld2plaHV3ZWh1OC5kZW50aXNjYW4uY2EiLCJhaWQiOiIwIiwiYWxwbiI6IiIsImZwIjoiIiwiaG9zdCI6ImhldTgzdWppZWl3b2V1ODNqMmV3amVodXdlaHU4LmRlbnRpc2Nhbi5jYSIsImlkIjoiZTI5MjNiYzYtODIwNC00NzY4LTk4ZWEtMzc5ZDQ4ZWE4YTdhIiwiaW5zZWN1cmUiOiIwIiwibmV0Ijoid3MiLCJwYXRoIjoiLzFhd056eFJTd0tzZGtQVktQMFpRcWxIanQxMHNwIiwicG9ydCI6IjgwIiwicHMiOiLwn4+04oCNU2hpbmUiLCJzY3kiOiJhdXRvIiwic2tpcC1jZXJ0LXZlcmlmeSI6dHJ1ZSwic25pIjoiIiwidGxzIjoiIiwidHlwZSI6Im5vbmUiLCJ2IjoiMiJ9ShineNET VPN ⚡️
+
+vless://e258977b-e413-4718-a3af-02d75492c349@172.64.47.168:2096?path=%2F&security=tls&encryption=none&insecure=0&host=jp.aniua.qzz.io&type=ws&allowInsecure=0&sni=jp.aniua.qzz.io#🇸🇬ShineNET VPN ⚡️
+
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpncWtVQ3ZtZU9UZ2hZSlhGMVlJdWs1@71.19.148.74:443#🇺🇸ShineNET VPN ⚡️
+
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpYNmJ0YlJ2SkNvM3VUUS0teWFhVDhNdmgwQ2dxaFlUTA@194.87.39.215:8388#🇹🇷ShineNET VPN ⚡️
+
+vmess://eyJhZGQiOiI0Ny4yNTAuMTQ5LjUxIiwiaG9zdCI6IjQ3LjI1MC4xNDkuNTEiLCJpZCI6Ijk2NjUyODBjLWEzZDEtNGFhYi1lZjlmLWEzYTQ5NzMzN2Q5MSIsIm5ldCI6IndzIiwicGF0aCI6Ii85NjY1MjgwYyIsInBvcnQiOjUwMDE4LCJwcyI6IvCfj7TigI1TaGluZSIsInR5cGUiOiJub25lIiwidiI6IjIiLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlfQ==ShineNET VPN ⚡️
+
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTp1WXBvN2RFSjJtTGR0SGJr@20.87.107.99:443#🇿🇦ShineNET VPN ⚡️
+
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpoYkdycGZ2TnJKc1VtS21QYlIzaVky@tinkered-pennies-puppies.freesocks.work:443#🇯🇵ShineNET VPN ⚡️
+
+vmess://eyJ2IjoiMiIsInBzIjoi8J+PtOKAjVNoaW5lIiwiYWRkIjoiZ3RtLXNnLWNjNTRxN2QxcTAxLjM2NWNsb3VkMDI4NS5jb20iLCJwb3J0IjoiNjAwNCIsInR5cGUiOiJub25lIiwiaWQiOiJhMDMwODQyYS1kMjlhLTRlYTktYTc3Ni0xNGZjNGI5ZTEwMmQiLCJhaWQiOiIwIiwibmV0IjoidGNwIiwicGF0aCI6Ii8iLCJob3N0IjoiZ3RtLXNnLWNjNTRxN2QxcTAxLjM2NWNsb3VkMDI4NS5jb20iLCJ0bHMiOiIiLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlfQ==ShineNET VPN ⚡️
+
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpYc3k4T3g0eU9WM3hMbHB4dGp6czNY@102.133.165.160:16233#🇿🇦ShineNET VPN ⚡️
+
+vless://a4b4dbc4-c9c5-4360-9e9c-d6019118e318@185.226.95.155:80?security=&amp;encryption=none&amp;headerType=none&amp;type=tcp#🇹🇷ShineNET VPN ⚡️
+
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTphZHVCOUhHeFFIakEyU0JNUmprSFg2@102.37.156.224:443#🇿🇦ShineNET VPN ⚡️
+
+vless://e258977b-e413-4718-a3af-02d75492c349@81.255.154.10:443?encryption=none&type=ws&security=tls&path=/&host=jp.aniua.qzz.io&sni=jp.aniua.qzz.io&allowInsecure=0#🇸🇬ShineNET VPN ⚡️
+
+vmess://eyJhZGQiOiIxNzIuMTA0LjgwLjY2IiwiYWlkIjoiMCIsImFscG4iOm51bGwsImZwIjpudWxsLCJob3N0IjpudWxsLCJpZCI6IjA0NjIxYmFlLWFiMzYtMTFlYy1iOTA5LTAyNDJhYzEyMDAwMiIsIm5hbWUiOiLwn4ev8J+HtSBKUCAxIiwibmV0IjoidGNwIiwicGF0aCI6Ii8iLCJwb3J0IjoyMjMyNCwicHMiOiLwn4+04oCNU2hpbmUiLCJzY3kiOiJhdXRvIiwic25pIjpudWxsLCJ0bHMiOiIiLCJ0eXBlIjpudWxsLCJ2IjpudWxsLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlfQ==ShineNET VPN ⚡️
+
+ss://YWVzLTI1Ni1nY206ZDI4OTBjOGYtOGQxNS00MmI3LTgwZTMtNjg3ZmFiOGIyYzdh@192.142.18.127:443#🇳🇱ShineNET VPN ⚡️
+
+ss://YWVzLTI1Ni1nY206VEV6amZBWXEySWp0dW9T@141.164.45.187:6679#🇰🇷ShineNET VPN ⚡️
+
+vmess://eyJhZGQiOiI1LjE4OC4xOTAuMjUyIiwiYWlkIjoiMCIsImFscG4iOm51bGwsImZwIjoiY2hyb21lIiwiaG9zdCI6IiIsImlkIjoiMDQ2MjFiYWUtYWIzNi0xMWVjLWI5MDktMDI0MmFjMTIwMDAyIiwibmFtZSI6IvCfh7nwn4e3IFRSIDEiLCJuZXQiOiJ0Y3AiLCJwYXRoIjoiLyIsInBvcnQiOjIyMzI0LCJwcyI6IvCfj7TigI1TaGluZSIsInNjeSI6ImF1dG8iLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlLCJzbmkiOm51bGwsInRscyI6IiIsInR5cGUiOm51bGwsInYiOm51bGx9ShineNET VPN ⚡️
+
+vmess://eyJ2IjoiMiIsInBzIjoi8J+PtOKAjVNoaW5lIiwiYWRkIjoiODIuMTk4LjI0Ni4yMzMiLCJwb3J0IjoiMTgwIiwidHlwZSI6Im5vbmUiLCJpZCI6ImQxM2ZjMmY1LTNlMDUtNDc5NS04MWViLTQ0MTQzYTA5ZTU1MiIsImFpZCI6IjAiLCJuZXQiOiJ0Y3AiLCJwYXRoIjoiLyIsImhvc3QiOiIiLCJ0bHMiOiIiLCJza2lwLWNlcnQtdmVyaWZ5Ijp0cnVlfQ==ShineNET VPN ⚡️
+
+vless://e258977b-e413-4718-a3af-02d75492c349@172.64.47.168:2096?encryption=none&type=ws&host=jp.aniua.qzz.io&path=/&security=tls&sni=jp.aniua.qzz.io#🇸🇬ShineNET VPN ⚡️
+
+vless://e258977b-e413-4718-a3af-02d75492c349@172.64.47.168:2096?path=/&security=tls&encryption=none&host=jp.aniua.qzz.io&type=ws&sni=jp.aniua.qzz.io#🇸🇬ShineNET VPN ⚡️
+
+vless://e258977b-e413-4718-a3af-02d75492c349@69.84.182.49:2096?encryption=none&host=jp.aniua.qzz.io&path=/&security=tls&sni=jp.aniua.qzz.io&type=ws#🇸🇬ShineNET VPN ⚡️
