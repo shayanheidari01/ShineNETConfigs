@@ -35,7 +35,7 @@ CHANNELS = [
     # "configshere",
 ]
 
-PAGES_TO_CHECK = 8
+PAGES_TO_CHECK = 4
 
 V2_URL = "https://www.v2nodes.com"
 FALLBACK_URL = "https://raw.githubusercontent.com/darkvpnapp/CloudflarePlus/refs/heads/main/proxy"
@@ -329,7 +329,7 @@ def send_configs_to_channel(configs: List[str]) -> None:
 
     for i, c in enumerate(configs, start=1):
         c_tg = rename_for_telegram(c)
-        msg = f"{i}/{len(configs)}\n{c_tg}"
+        msg = f"{i}/{len(configs)}\n\n#کانفیگ #ویتوری #فیلترشکن #پروکسی #اینترنت #اینترنت_آزاد #وی_پی_ان #نپستر #vpn #config #v2ray #proxy\n\n```{c_tg}```"
 
         if tg_send_message(msg):
             success += 1
