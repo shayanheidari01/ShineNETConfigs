@@ -14,6 +14,7 @@ Then:
 
 import base64
 import json
+import os
 import random
 import re
 import sys
@@ -41,20 +42,28 @@ FALLBACK_URL = "https://raw.githubusercontent.com/darkvpnapp/CloudflarePlus/refs
 
 OUTPUT_FILE = Path("configs.txt")
 REQUEST_TIMEOUT = 15
+
+# Name used for saved/mined configs
 CONFIG_NAME = "ShineNET VPN ⚡️"
+
+# Name used ONLY for configs sent to Telegram
+TELEGRAM_CONFIG_NAME = "Telegram: @FreeV2rayCH ⚡️"
 
 # Telegram publish settings (read from env in CI)
 # BOT_TOKEN -> GitHub Secret
 # TELEGRAM_CHAT_ID -> e.g. @FreeV2rayCH or numeric channel id
-import os
 BOT_TOKEN = os.getenv("BOT_TOKEN", "").strip()
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "@FreeV2rayCH").strip()
 
 # Telegram max text length per message
 TG_TEXT_LIMIT = 4096
 
-# Delay between sending each config (seconds)
-TG_SEND_DELAY = 0.35
+# Delay between sending each config (seconds, randomized)
+TG_SEND_DELAY_MIN = 0.8
+TG_SEND_DELAY_MAX = 1.6
+
+# Retry count for telegram send
+TG_MAX_RETRIES = 4
 
 # ---------------- REGEX ----------------
 
@@ -83,9 +92,9 @@ def random_headers() -> dict:
         "Connection": "keep-alive",
     }
 
-# ---------------- VMESS FIX ----------------
+# ---------------- URI TRANSFORM ----------------
 
-def transform_vmess(uri: str) -> str:
+def transform_vmess_with_name(uri: str, name: str) -> str:
     """
     Safely decode vmess payload, set "ps" name, then re-encode.
     """
@@ -100,7 +109,7 @@ def transform_vmess(uri: str) -> str:
         decoded = base64.b64decode(payload).decode("utf-8", errors="ignore")
         data = json.loads(decoded)
 
-        data["ps"] = CONFIG_NAME
+        data["ps"] = name
 
         encoded = base64.b64encode(
             json.dumps(data, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
@@ -129,17 +138,24 @@ def validate(uri: str) -> bool:
 
 # ---------------- CLEAN ----------------
 
-def clean_uri(uri: str) -> str:
+def clean_uri(uri: str, name: str = CONFIG_NAME) -> str:
+    """
+    Normalize URI and set display name:
+    - vmess: set "ps" field
+    - others: append fragment #name
+    """
     uri = uri.strip().replace("\n", "").replace("\r", "")
     uri = uri.split()[0]
     uri = uri.split("#")[0]
 
     if uri.startswith("vmess://"):
-        return transform_vmess(uri)
+        return transform_vmess_with_name(uri, name=name)
 
-    # for non-vmess append fragment name
     uri = uri.rstrip("/")
-    return f"{uri}#{CONFIG_NAME}"
+    return f"{uri}#{name}"
+
+def rename_for_telegram(uri: str) -> str:
+    return clean_uri(uri, name=TELEGRAM_CONFIG_NAME)
 
 # ---------------- TELEGRAM MINER ----------------
 
@@ -170,7 +186,7 @@ def mine_telegram() -> List[str]:
         for text in posts:
             for c in URI_RE.findall(text):
                 c = re.split(r"\s|\[|\(|➡|🔗|👇", c)[0]
-                c = clean_uri(c)
+                c = clean_uri(c, name=CONFIG_NAME)
                 if validate(c):
                     all_configs.append(c)
 
@@ -188,7 +204,7 @@ def extract_from_server(url: str) -> List[str]:
 
         found = []
         for x in URI_RE.findall(html):
-            x = clean_uri(x)
+            x = clean_uri(x, name=CONFIG_NAME)
             if validate(x):
                 found.append(x)
 
@@ -238,7 +254,7 @@ def mine_fallback() -> List[str]:
 
         configs = []
         for x in URI_RE.findall(html):
-            x = clean_uri(x)
+            x = clean_uri(x, name=CONFIG_NAME)
             if validate(x):
                 configs.append(x)
 
@@ -271,37 +287,56 @@ def tg_send_message(text: str) -> bool:
         "text": text,
         "disable_web_page_preview": True,
     }
-    try:
-        r = requests.post(url, json=payload, timeout=REQUEST_TIMEOUT)
-        if r.status_code != 200:
+
+    for attempt in range(1, TG_MAX_RETRIES + 1):
+        try:
+            r = requests.post(url, json=payload, timeout=REQUEST_TIMEOUT)
+
+            if r.status_code == 200:
+                return True
+
+            if r.status_code == 429:
+                retry_after = 2
+                try:
+                    j = r.json()
+                    retry_after = int(j.get("parameters", {}).get("retry_after", 2))
+                except Exception:
+                    pass
+
+                wait_s = retry_after + random.uniform(0.2, 0.8)
+                print(f"[WARN] 429 rate limit. wait {wait_s:.2f}s (attempt {attempt}/{TG_MAX_RETRIES})")
+                time.sleep(wait_s)
+                continue
+
             print(f"[WARN] Telegram send failed: {r.status_code} | {r.text[:300]}")
-            return False
-        return True
-    except Exception as e:
-        print(f"[WARN] Telegram send exception: {e}")
-        return False
+            time.sleep(1.2 + random.uniform(0.1, 0.5))
+
+        except Exception as e:
+            print(f"[WARN] Telegram send exception: {e}")
+            time.sleep(1.5 + random.uniform(0.1, 0.7))
+
+    return False
 
 def send_configs_to_channel(configs: List[str]) -> None:
     if not configs:
         tg_send_message("❌ هیچ کانفیگی پیدا نشد.")
         return
 
-    # Header message
     tg_send_message(f"✅ Total configs: {len(configs)}\n📤 Sending one-by-one...")
 
     success = 0
     failed = 0
 
     for i, c in enumerate(configs, start=1):
-        # Optional index prefix for readability
-        msg = f"{i}/{len(configs)}\n{c}"
+        c_tg = rename_for_telegram(c)
+        msg = f"{i}/{len(configs)}\n{c_tg}"
 
         if tg_send_message(msg):
             success += 1
         else:
             failed += 1
 
-        time.sleep(TG_SEND_DELAY)
+        time.sleep(random.uniform(TG_SEND_DELAY_MIN, TG_SEND_DELAY_MAX))
 
     tg_send_message(f"✅ Done\nSuccess: {success}\nFailed: {failed}")
     print(f"[INFO] Telegram one-by-one sent. success={success}, failed={failed}")
