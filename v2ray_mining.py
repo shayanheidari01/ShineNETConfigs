@@ -108,9 +108,7 @@ def mdv2_code_block(text: str) -> str:
     In code blocks only backslash and backtick must be escaped.
     """
     text = text.replace("\\", "\\\\").replace("`", "\\`")
-    return f"\n
-```\n{text}\n
-```"
+    return f"\n```\n{text}\n```"
 
 # ---------------- URI TRANSFORM ----------------
 
