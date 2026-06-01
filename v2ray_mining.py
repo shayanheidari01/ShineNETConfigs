@@ -71,7 +71,7 @@ TG_MAX_RETRIES = 4
 # ---------------- REGEX ----------------
 
 URI_RE = re.compile(
-    r'(?:vless|vmess|trojan|ss)://[^\s\'"<>()\\[\\]{}]+',
+    r'(?:vless|vmess|trojan|ss)://[^\s\'"<>()\[\]{}]+',
     re.IGNORECASE
 )
 
@@ -128,7 +128,6 @@ def transform_vmess_with_name(uri: str, name: str) -> str:
 
         decoded = base64.b64decode(payload).decode("utf-8", errors="ignore")
         data = json.loads(decoded)
-
         data["ps"] = name
 
         encoded = base64.b64encode(
@@ -205,7 +204,7 @@ def mine_telegram() -> List[str]:
 
         for text in posts:
             for c in URI_RE.findall(text):
-                c = re.split(r"\s|\\[|\\(|➡|🔗|👇", c)[0]
+                c = re.split(r"\s|\[|\(|➡|🔗|👇", c)[0]
                 c = clean_uri(c, name=CONFIG_NAME)
                 if validate(c):
                     all_configs.append(c)
@@ -343,12 +342,11 @@ def send_configs_to_channel(configs: List[str]) -> None:
         tg_send_message(mdv2_escape("❌ هیچ کانفیگی پیدا نشد."))
         return
 
-    start_msg = "✅ Total configs: {}\n📤 Sending one-by-one...".format(len(configs))
+    start_msg = f"✅ Total configs: {len(configs)}\n📤 Sending one-by-one..."
     tg_send_message(mdv2_escape(start_msg))
 
     success = 0
     failed = 0
-
     tags = "#کانفیگ #ویتوری #فیلترشکن #پروکسی #اینترنت #اینترنت_آزاد #وی_پی_ان #نپستر #vpn #config #v2ray #proxy"
 
     for i, c in enumerate(configs, start=1):
