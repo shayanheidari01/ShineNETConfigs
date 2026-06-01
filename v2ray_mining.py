@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
@@ -10,7 +9,10 @@ Mining order:
 
 Then:
 - Save configs to file
-- Send configs to Telegram channel (MarkdownV2)
+- Send configs to Telegram channel
+
+Telegram formatting:
+- Uses MarkdownV2 parse mode for safe/code-styled messages
 """
 
 import base64
@@ -66,13 +68,10 @@ TG_SEND_DELAY_MAX = 1.6
 # Retry count for telegram send
 TG_MAX_RETRIES = 4
 
-# Telegram parse mode
-TG_PARSE_MODE = "MarkdownV2"
-
 # ---------------- REGEX ----------------
 
 URI_RE = re.compile(
-    r'(?:vless|vmess|trojan|ss)://[^\s\'"<>()\[\]{}]+',
+    r'(?:vless|vmess|trojan|ss)://[^\s\'"<>()\\[\\]{}]+',
     re.IGNORECASE
 )
 
@@ -98,20 +97,19 @@ def random_headers() -> dict:
 
 def mdv2_escape(text: str) -> str:
     """
-    Escape Telegram MarkdownV2 special chars.
-    Needed for normal text (not inside code fence).
+    Escape Telegram MarkdownV2 special chars for normal text context.
     """
-    special = r"_*[]()~`>#+-=|{}.!"
+    special = r'_*[]()~`>#+-=|{}.!'
     return "".join("\\" + ch if ch in special else ch for ch in text)
 
-def build_code_block(text: str) -> str:
+def mdv2_code_block(text: str) -> str:
     """
-    Build a safe MarkdownV2 code block.
-    We only need to escape backticks and backslashes inside code block.
+    Safe fenced code block for MarkdownV2.
+    In code blocks only backslash and backtick must be escaped.
     """
-    safe = text.replace("\\", "\\\\").replace("`", "\\`")
+    text = text.replace("\\", "\\\\").replace("`", "\\`")
     return f"
-```{safe}
+```{text}
 ```"
 
 # ---------------- URI TRANSFORM ----------------
@@ -207,7 +205,7 @@ def mine_telegram() -> List[str]:
 
         for text in posts:
             for c in URI_RE.findall(text):
-                c = re.split(r"\s|\[|\(|➡|🔗|👇", c)[0]
+                c = re.split(r"\s|\\[|\\(|➡|🔗|👇", c)[0]
                 c = clean_uri(c, name=CONFIG_NAME)
                 if validate(c):
                     all_configs.append(c)
@@ -294,7 +292,7 @@ def save(configs: List[str]) -> None:
 
 # ---------------- TELEGRAM PUBLISH ----------------
 
-def tg_send_message(text: str) -> bool:
+def tg_send_message(text: str, parse_mode: str = "MarkdownV2") -> bool:
     if not BOT_TOKEN or not TELEGRAM_CHAT_ID:
         print("[WARN] BOT_TOKEN/TELEGRAM_CHAT_ID not set. Skipping Telegram send.")
         return False
@@ -307,7 +305,7 @@ def tg_send_message(text: str) -> bool:
     payload = {
         "chat_id": TELEGRAM_CHAT_ID,
         "text": text,
-        "parse_mode": TG_PARSE_MODE,
+        "parse_mode": parse_mode,
         "disable_web_page_preview": True,
     }
 
@@ -355,11 +353,12 @@ def send_configs_to_channel(configs: List[str]) -> None:
 
     for i, c in enumerate(configs, start=1):
         c_tg = rename_for_telegram(c)
-        header = mdv2_escape(f"{i}/{len(configs)}")
-        hashtags = mdv2_escape(tags)
-        code = build_code_block(c_tg)
 
-        msg = f"{header}\n\n{hashtags}\n\n{code}"
+        header = mdv2_escape(f"{i}/{len(configs)}")
+        tags_line = mdv2_escape(tags)
+        cfg_block = mdv2_code_block(c_tg)
+
+        msg = f"{header}\n\n{tags_line}\n\n{cfg_block}"
 
         if tg_send_message(msg):
             success += 1
