@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
 """
 Mining order:
 1) Telegram channels
@@ -109,8 +108,8 @@ def mdv2_code_block(text: str) -> str:
     In code blocks only backslash and backtick must be escaped.
     """
     text = text.replace("\\", "\\\\").replace("`", "\\`")
-    return f"
-```{text}
+    return f"\n
+```\n{text}\n
 ```"
 
 # ---------------- URI TRANSFORM ----------------
@@ -357,7 +356,7 @@ def send_configs_to_channel(configs: List[str]) -> None:
         tags_line = mdv2_escape(tags)
         cfg_block = mdv2_code_block(c_tg)
 
-        msg = f"{header}\n\n{tags_line}\n\n{cfg_block}"
+        msg = f"{header}\n\n{tags_line}\n{cfg_block}"
 
         if tg_send_message(msg):
             success += 1
