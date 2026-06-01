@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
@@ -9,7 +10,7 @@ Mining order:
 
 Then:
 - Save configs to file
-- Send configs to Telegram channel
+- Send configs to Telegram channel (MarkdownV2)
 """
 
 import base64
@@ -65,6 +66,9 @@ TG_SEND_DELAY_MAX = 1.6
 # Retry count for telegram send
 TG_MAX_RETRIES = 4
 
+# Telegram parse mode
+TG_PARSE_MODE = "MarkdownV2"
+
 # ---------------- REGEX ----------------
 
 URI_RE = re.compile(
@@ -91,6 +95,24 @@ def random_headers() -> dict:
         "Accept": "*/*",
         "Connection": "keep-alive",
     }
+
+def mdv2_escape(text: str) -> str:
+    """
+    Escape Telegram MarkdownV2 special chars.
+    Needed for normal text (not inside code fence).
+    """
+    special = r"_*[]()~`>#+-=|{}.!"
+    return "".join("\\" + ch if ch in special else ch for ch in text)
+
+def build_code_block(text: str) -> str:
+    """
+    Build a safe MarkdownV2 code block.
+    We only need to escape backticks and backslashes inside code block.
+    """
+    safe = text.replace("\\", "\\\\").replace("`", "\\`")
+    return f"
+```{safe}
+```"
 
 # ---------------- URI TRANSFORM ----------------
 
@@ -285,6 +307,7 @@ def tg_send_message(text: str) -> bool:
     payload = {
         "chat_id": TELEGRAM_CHAT_ID,
         "text": text,
+        "parse_mode": TG_PARSE_MODE,
         "disable_web_page_preview": True,
     }
 
@@ -319,17 +342,24 @@ def tg_send_message(text: str) -> bool:
 
 def send_configs_to_channel(configs: List[str]) -> None:
     if not configs:
-        tg_send_message("❌ هیچ کانفیگی پیدا نشد.")
+        tg_send_message(mdv2_escape("❌ هیچ کانفیگی پیدا نشد."))
         return
 
-    tg_send_message(f"✅ Total configs: {len(configs)}\n📤 Sending one-by-one...")
+    start_msg = "✅ Total configs: {}\n📤 Sending one-by-one...".format(len(configs))
+    tg_send_message(mdv2_escape(start_msg))
 
     success = 0
     failed = 0
 
+    tags = "#کانفیگ #ویتوری #فیلترشکن #پروکسی #اینترنت #اینترنت_آزاد #وی_پی_ان #نپستر #vpn #config #v2ray #proxy"
+
     for i, c in enumerate(configs, start=1):
         c_tg = rename_for_telegram(c)
-        msg = f"{i}/{len(configs)}\n\n#کانفیگ #ویتوری #فیلترشکن #پروکسی #اینترنت #اینترنت_آزاد #وی_پی_ان #نپستر #vpn #config #v2ray #proxy\n\n```{c_tg}```"
+        header = mdv2_escape(f"{i}/{len(configs)}")
+        hashtags = mdv2_escape(tags)
+        code = build_code_block(c_tg)
+
+        msg = f"{header}\n\n{hashtags}\n\n{code}"
 
         if tg_send_message(msg):
             success += 1
@@ -338,7 +368,8 @@ def send_configs_to_channel(configs: List[str]) -> None:
 
         time.sleep(random.uniform(TG_SEND_DELAY_MIN, TG_SEND_DELAY_MAX))
 
-    tg_send_message(f"✅ Done\nSuccess: {success}\nFailed: {failed}")
+    done_msg = f"✅ Done\nSuccess: {success}\nFailed: {failed}"
+    tg_send_message(mdv2_escape(done_msg))
     print(f"[INFO] Telegram one-by-one sent. success={success}, failed={failed}")
 
 # ---------------- MAIN ----------------
