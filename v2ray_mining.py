@@ -17,10 +17,10 @@ import json
 import random
 import re
 import sys
+import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import List
-from urllib.parse import quote
 
 import requests
 from bs4 import BeautifulSoup
@@ -52,6 +52,9 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "@FreeV2rayCH").strip()
 
 # Telegram max text length per message
 TG_TEXT_LIMIT = 4096
+
+# Delay between sending each config (seconds)
+TG_SEND_DELAY = 0.35
 
 # ---------------- REGEX ----------------
 
@@ -258,6 +261,10 @@ def tg_send_message(text: str) -> bool:
         print("[WARN] BOT_TOKEN/TELEGRAM_CHAT_ID not set. Skipping Telegram send.")
         return False
 
+    if len(text) > TG_TEXT_LIMIT:
+        print(f"[WARN] Message too long ({len(text)} chars), skipping.")
+        return False
+
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     payload = {
         "chat_id": TELEGRAM_CHAT_ID,
@@ -279,24 +286,25 @@ def send_configs_to_channel(configs: List[str]) -> None:
         tg_send_message("❌ هیچ کانفیگی پیدا نشد.")
         return
 
-    header = f"✅ Total configs: {len(configs)}\n\n"
-    buffer = header
+    # Header message
+    tg_send_message(f"✅ Total configs: {len(configs)}\n📤 Sending one-by-one...")
 
-    sent_count = 0
-    for c in configs:
-        line = c + "\n"
-        if len(buffer) + len(line) > TG_TEXT_LIMIT:
-            if tg_send_message(buffer):
-                sent_count += 1
-            buffer = line
+    success = 0
+    failed = 0
+
+    for i, c in enumerate(configs, start=1):
+        # Optional index prefix for readability
+        msg = f"{i}/{len(configs)}\n{c}"
+
+        if tg_send_message(msg):
+            success += 1
         else:
-            buffer += line
+            failed += 1
 
-    if buffer.strip():
-        if tg_send_message(buffer):
-            sent_count += 1
+        time.sleep(TG_SEND_DELAY)
 
-    print(f"[INFO] Telegram messages sent: {sent_count}")
+    tg_send_message(f"✅ Done\nSuccess: {success}\nFailed: {failed}")
+    print(f"[INFO] Telegram one-by-one sent. success={success}, failed={failed}")
 
 # ---------------- MAIN ----------------
 
