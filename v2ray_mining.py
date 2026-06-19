@@ -26,6 +26,7 @@ PAGES_TO_CHECK = 2
 
 V2_URL = "https://www.v2nodes.com"
 FALLBACK_URL = "https://raw.githubusercontent.com/darkvpnapp/CloudflarePlus/refs/heads/main/proxy"
+MAIN_CONFIGS_URL = "https://raw.githubusercontent.com/shayanheidari01/shayanheidari01/refs/heads/main/config"
 
 OUTPUT_FILE = Path("configs.txt")
 REQUEST_TIMEOUT = 15
@@ -202,6 +203,9 @@ def mine_fallback() -> List[str]:
     except Exception:
         return []
 
+def get_main_configs():
+	return requests.get(MAIN_CONFIGS_URL).text
+
 # ---------------- SAVE (FIX اصلی) ----------------
 
 def save(configs: List[str]) -> None:
@@ -214,6 +218,7 @@ def save(configs: List[str]) -> None:
 def main():
     telegram_configs = mine_telegram()
     v2_configs = mine_v2nodes()
+    main_configs = get_main_configs()
 
     if not telegram_configs and not v2_configs:
         configs = mine_fallback()
@@ -231,8 +236,11 @@ def main():
     if not final:
         print("[ERROR] no configs found")
         sys.exit(1)
-
-    save(final)
+        
+    if main_configs:
+    	save(main_configs.split("\n"))
+    else:
+    	save(final)
     print("DONE")
 
 if __name__ == "__main__":
