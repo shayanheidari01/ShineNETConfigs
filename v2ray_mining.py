@@ -113,18 +113,15 @@ def mine_telegram() -> List[str]:
     for channel in CHANNELS:
         base = f"https://t.me/s/{channel}"
         posts = []
+        try:
+            r = requests.get(base, headers=random_headers(), timeout=REQUEST_TIMEOUT)
+            r.raise_for_status()
+        except Exception:
+            continue
 
-        for i in range(PAGES_TO_CHECK):
-            url = base if i == 0 else f"{base}?before={i * 50}"
-            try:
-                r = requests.get(url, headers=random_headers(), timeout=REQUEST_TIMEOUT)
-                r.raise_for_status()
-            except Exception:
-                continue
-
-            soup = BeautifulSoup(r.text, "html.parser")
-            for p in soup.select(".tgme_widget_message_text"):
-                posts.append(p.get_text("\n", strip=True))
+        soup = BeautifulSoup(r.text, "html.parser")
+        for p in soup.select(".tgme_widget_message_text"):
+            posts.append(p.get_text("\n", strip=True))
 
         # حفظ ترتیب طبیعی + حذف تکراری بدون shuffle
         seen = set()
@@ -135,6 +132,7 @@ def mine_telegram() -> List[str]:
                     seen.add(c)
                     all_configs.append(c)
 
+    all_configs.reverse()
     return all_configs
 
 # ---------------- V2 + FALLBACK ----------------
