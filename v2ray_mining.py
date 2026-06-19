@@ -43,9 +43,8 @@ TG_SEND_DELAY_MAX = 1.6
 TG_MAX_RETRIES = 4
 
 # ---------------- REGEX ----------------
-
 URI_RE = re.compile(
-    r'(?:vless|vmess|trojan|ss)://[^\s\'"<>()\[\]{}]+',
+    r"(?:vless|vmess|trojan|ss)://[^\s'\"<>()\[\]{}]+",
     re.IGNORECASE
 )
 
@@ -70,12 +69,12 @@ def random_headers() -> dict:
     }
 
 def mdv2_escape(text: str) -> str:
-    special = r'_*[]()~`>#+-=|{}.!'
+    special = r'_*~`>#+-=|{}.!'
     return "".join("\\" + ch if ch in special else ch for ch in text)
 
 def mdv2_code_block(text: str) -> str:
     text = text.replace("\\", "\\\\").replace("`", "\\`")
-    return f"\n```\n{text}\n```"
+    return f"```\n{text}\n```"
 
 # ---------------- CLEAN ----------------
 
@@ -124,7 +123,6 @@ def mine_telegram() -> List[str]:
         for p in soup.select(".tgme_widget_message_text"):
             posts.append(p.get_text("\n", strip=True))
 
-        # حفظ ترتیب طبیعی + حذف تکراری بدون shuffle
         seen = set()
         for text in posts:
             for c in URI_RE.findall(text):
@@ -204,43 +202,42 @@ def mine_fallback() -> List[str]:
         return []
 
 def get_main_configs():
-	return requests.get(MAIN_CONFIGS_URL).text
+    return requests.get(MAIN_CONFIGS_URL).text
 
-# ---------------- SAVE (FIX اصلی) ----------------
+# ---------------- SAVE ----------------
 
 def save(configs: List[str]) -> None:
-    # 👇 مهم: فقط line-by-line بدون فاصله اضافی
     OUTPUT_FILE.write_text("\n".join(configs) + "\n", encoding="utf-8")
     print(f"[INFO] saved {len(configs)} configs -> {OUTPUT_FILE}")
 
 # ---------------- MAIN ----------------
 
 def main():
-    telegram_configs = mine_telegram()
-    v2_configs = mine_v2nodes()
     main_configs = get_main_configs()
-
-    if not telegram_configs and not v2_configs:
-        configs = mine_fallback()
-    else:
-        configs = telegram_configs + v2_configs
-
-    # dedupe بدون تغییر ترتیب
-    seen = set()
-    final = []
-    for c in configs:
-        if c not in seen:
-            seen.add(c)
-            final.append(c)
-
-    if not final:
-        print("[ERROR] no configs found")
-        sys.exit(1)
-        
     if main_configs:
-    	save(main_configs.split("\n"))
+        save(main_configs.split("\n"))
     else:
-    	save(final)
+        telegram_configs = mine_telegram()
+        v2_configs = mine_v2nodes()
+        if not telegram_configs and not v2_configs:
+            configs = mine_fallback()
+        else:
+            configs = telegram_configs + v2_configs
+
+        # dedupe بدون تغییر ترتیب
+        seen = set()
+        final = []
+        for c in configs:
+            if c not in seen:
+                seen.add(c)
+                final.append(c)
+
+        if not final:
+            print("[ERROR] no configs found")
+            sys.exit(1)
+
+        save(final)
+
     print("DONE")
 
 if __name__ == "__main__":
