@@ -18,7 +18,7 @@ from bs4 import BeautifulSoup
 # ---------------- SETTINGS ----------------
 
 CHANNELS = [
-    "ConfigX2ray",
+    "iraniroid",
     "ConfigsHUB2",
 ]
 
