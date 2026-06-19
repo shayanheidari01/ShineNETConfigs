@@ -22,7 +22,7 @@ CHANNELS = [
     "ConfigsHUB2",
 ]
 
-PAGES_TO_CHECK = 4
+PAGES_TO_CHECK = 2
 
 V2_URL = "https://www.v2nodes.com"
 FALLBACK_URL = "https://raw.githubusercontent.com/darkvpnapp/CloudflarePlus/refs/heads/main/proxy"
