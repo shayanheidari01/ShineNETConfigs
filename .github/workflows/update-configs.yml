@@ -1,0 +1,61 @@
+name: Update V2Ray Configs
+
+on:
+  schedule:
+    # هر ۳۰ دقیقه یک‌بار اجرا می‌شود (زمان UTC)
+    - cron: "*/30 * * * *"
+  workflow_dispatch: {}   # امکان اجرای دستی از تب Actions
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-configs
+  cancel-in-progress: true
+
+jobs:
+  scrape-and-filter:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run scraper
+        run: |
+          python telegram_v2ray_scraper.py configshub \
+            --max-pages 15 \
+            --delay 1.5 \
+            --output-dir configs_output
+
+      - name: Filter TLS-only (allowInsecure=false) configs
+        run: |
+          python filter_configs.py configs_output/all_configs.txt configs.txt
+
+      - name: Show summary
+        run: |
+          echo "تعداد کانفیگ نهایی:"
+          wc -l < configs.txt || echo 0
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add configs.txt
+          if git diff --cached --quiet; then
+            echo "تغییری در configs.txt وجود ندارد."
+          else
+            git commit -m "chore: update configs.txt [automated]"
+            git push
+          fi
