@@ -72,8 +72,8 @@ _EXCLUDE_CHARS = r"\s<>\"'\u200c\u200b"
 # immediately preceded by a letter/digit/underscore.
 CONFIG_PATTERNS: Dict[str, re.Pattern] = {
     "vmess": re.compile(r"vmess://[A-Za-z0-9+/=_-]{20,}"),
-    "vless": re.compile(rf"vless://[^{_EXCLUDE_CHARS}]+"),
-    "trojan": re.compile(rf"trojan://[^{_EXCLUDE_CHARS}]+"),
+    "vless": re.compile(r"vless://[^\s<>\"]+"),
+    "trojan": re.compile(r"trojan://[^\s<>\"]+"),
     "shadowsocks": re.compile(rf"(?<![A-Za-z0-9_])ss://[^{_EXCLUDE_CHARS}]+"),
 }
 
