@@ -1,3 +1,6 @@
+vless://a13df940-020c-465f-bc89-ee5279b5cd6a@194.36.55.51:443?security=tls&sni=hki.ylks.link&type=ws&path=/?proxyip#[🏁]SNV
+vless://a13df940-020c-465f-bc89-ee5279b5cd6a@202.181.188.65:3333?security=tls&sni=hki.ylks.link&type=ws&path=%2F#[🇩🇪]SNV
+vless://89b3cbba-e6ac-485a-9481-976a0415eab9@188.114.97.146:443?security=tls&sni=4b097C46.griZzlYvPN.PAgES.deV&type=ws&path=/vvebfg5xe2bs8yup?ed#[🇨🇦]SNV
 vless://34208027-101c-4e79-a0e3-87f62ef214e6@188.114.96.3:2083?path=%2F0gwf2al5WC4FuTAA%3Fed%3D2560&security=tls&encryption=none&alpn=h2,http/1.1&host=MortEzA865.pAgES.dev&fp=randomized&type=ws&sni=MoRTEZA865.Pages.deV#[🇨🇦]SNV
 vless://c35050ce-01ab-45a9-91b8-54cec637d0a8@45.130.125.229:443?path=%2Fudfyfws&security=tls&encryption=none&insecure=0&host=octopusss5.info&type=ws&allowInsecure=0&sni=octopusss5.info#[🇸🇨]SNV
 vless://17a7bf97-fef5-4101-a5c5-7c730fabeeee@104.16.190.131:443?path=%2F%3Fed&security=tls&encryption=none&host=bpb-worker-panel-h5f.pages.dev&fp=firefox&type=ws&sni=bpb-worker-panel-h5f.pages.dev#[🇨🇦]SNV
@@ -11,7 +14,6 @@ vless://XpnTeam-21@199.232.78.160:443?path=%2F&security=tls&alpn=http%2F1.1&encr
 vless://a5c05c1e-aa68-443f-8598-09800244bd4b@192.71.82.2:443?path=%2FLiL%3Fed&security=tls&alpn=h3&encryption=none&insecure=0&fp=firefox&type=ws&allowInsecure=0&sni=kingcloud.biack.ir#[🇸🇪]SNV
 vless://716426fa-bcb7-4eb9-b460-36399ebf740d@184.107.106.68:443?security=tls&encryption=none&insecure=0&headerType=none&type=tcp&allowInsecure=0&sni=lizca2.footballfantasyforum.com#[🇨🇦]SNV
 vless://e75fbac1-efaa-45a2-ac76-ac150cb37329@k2.cloud--vpn.site:443?path=%2F&security=tls&alpn=h2&encryption=none&insecure=0&host=c12.com&fp=firefox&type=ws&allowInsecure=0&sni=ssl.fastly.com#[🏁]SNV
-vless://83afd88f-200f-4d89-bfc7-66eff160c1d8@104.18.37.228:443?path=%2F%3FTELEGRAM-MARAMBASHI_MARAMBASHI%3Fed%3D512&security=tls&encryption=none&insecure=0&host=josni.hoyes.cloudns.ch&ech=ip.gs%2Budp%3A%2F%2F8.8.8.8&type=ws&allowInsecure=0&sni=josni.hoyes.cloudns.ch#[🇨🇦]SNV
 vless://e5cc16a6-ea42-46b2-82ae-ad2157e1641b@188.114.99.0:443?path=%2Fsg-melbi%23TELEGRAM-MARAMBASHI_MARAMBASHI%3Fed%3D2560&security=tls&encryption=none&insecure=0&host=hhlfy.twiladaphne.ndjp.net&type=ws&allowInsecure=0&sni=hhlfy.twiladaphne.ndjp.net#[🏁]SNV
 vless://903daa6f-534c-4f4a-bbc8-024993f5cb01@www.speedtest.net:443?path=%2FCMlsadnCISdss%23TELEGRAM-MARAMBASHI_MARAMBASHI%3Fed%3D2560&security=tls&alpn=h3%2Ch2%2Chttp%2F1.1&encryption=none&insecure=0&host=ptr.cyberbear.io&fp=random&type=ws&allowInsecure=0&sni=ptr.cyberbear.io#[🇨🇦]SNV
 vless://83afd88f-200f-4d89-bfc7-66eff160c1d8@104.16.117.43:443?path=%2F%3FTELEGRAM-MARAMBASHI_MARAMBASHI%3Fed%3D512&security=tls&encryption=none&insecure=0&host=josni.hoyes.cloudns.ch&ech=ip.gs%2Budp%3A%2F%2F8.8.8.8&type=ws&allowInsecure=0&sni=josni.hoyes.cloudns.ch#[🇨🇦]SNV
@@ -20,18 +22,13 @@ vless://53c76647-14d1-4df5-99cb-be99ad2e6bd9@fr15.mechvpn.online:443?security=tl
 vless://b3e2470b-5940-b801-6381-51b2902ee380@69.46.46.123:443?path=%2Fws%2Fb3e2470b-5940-b801-6381-51b2902ee380&security=tls&alpn=http%2F1.1&encryption=none&insecure=0&host=sr-production-d768.up.railway.app&fp=chrome&type=ws&allowInsecure=0&sni=sr-production-d768.up.railway.app#[🏁]SNV
 vless://b2f6aa3a-2550-4a1c-b2c0-1c94b1207217@188.114.97.6:443?path=%2Fhdgrbws&security=tls&encryption=none&insecure=0&host=terazhediii.info&fp=chrome&type=ws&allowInsecure=0&sni=terazhediii.info#[🇨🇦]SNV
 vless://83afd88f-200f-4d89-bfc7-66eff160c1d8@172.66.44.97:443?path=%2Fsg-melbi%23TELEGRAM-MARAMBASHI_MARAMBASHI%3Fed%3D512&security=tls&encryption=none&insecure=0&host=josni.hoyes.cloudns.ch&ech=ip.gs%2Budp%3A%2F%2F8.8.8.8&type=ws&allowInsecure=0&sni=josni.hoyes.cloudns.ch#[🇨🇦]SNV
+vless://83afd88f-200f-4d89-bfc7-66eff160c1d8@104.18.37.228:443?path=%2F%3FTELEGRAM-MARAMBASHI_MARAMBASHI%3Fed%3D512&security=tls&encryption=none&insecure=0&host=josni.hoyes.cloudns.ch&ech=ip.gs%2Budp%3A%2F%2F8.8.8.8&type=ws&allowInsecure=0&sni=josni.hoyes.cloudns.ch#[🇨🇦]SNV
 vless://d7dd3a35-b68b-4992-b319-a85b8a1fc8e5@23.106.142.106:51252/?type=ws&encryption=none&host=dns68.putata.eu.org&path=%2F%3Fed%3D2048&security=tls&sni=dns68.putata.eu.org#[🇯🇵]SNV
 vless://d342d11e-d424-4583-b36e-524ab1f0afa4@172.66.46.211:443?security=tls&sni=edtunnel-csc.pages.dev&type=ws&host=edtunnel-csc.pages.dev#[🇨🇦]SNV
 vless://03707fb7-0990-440f-88f6-b0e0f7242a38@104.16.79.73:443?security=tls&encryption=none&insecure=0&type=ws&allowInsecure=0&sni=de-new-1.ariyuz.org#[🇨🇦]SNV
 vless://2b622609-bb92-49e8-9631-4ada00324f47@45.155.68.9:443?path=%2F&security=tls&encryption=none&insecure=0&fp=chrome&type=ws&allowInsecure=0&sni=it2ws.wba-pn.ru#[🇮🇹]SNV
 vless://c7e9c591-2764-423a-afca-efbd010fd396@46.101.163.124:2053?path=%2F&security=tls&encryption=none&insecure=0&host=forfreeuse.rtqa.ru&type=ws&allowInsecure=0&sni=forfreeuse.rtqa.ru#[🇩🇪]SNV
 vless://XpnTeam-23@199.232.78.160:443?path=%2F&security=tls&alpn=http%2F1.1&encryption=none&insecure=0&host=Appxdn.global.ssl.fastly.net&fp=chrome&type=ws&allowInsecure=0&sni=ssl.fastly.com#[🏁]SNV
-vless://cf39fab0-bb85-42cb-9945-2ad69d78e575@104.26.14.85:443?path=%2FGOrbEh&security=tls&encryption=none&insecure=0&host=rubifen.adaspoloandco.com&fp=chrome&type=ws&allowInsecure=0&sni=rubifen.adaspoloandco.com#[🇨🇦]SNV
-vless://cf39fab0-bb85-42cb-9945-2ad69d78e575@185.207.196.48:443?path=%2FGOrbEh&security=tls&encryption=none&insecure=0&host=rubifen.adaspoloandco.com&fp=chrome&type=ws&allowInsecure=0&sni=rubifen.adaspoloandco.com#[🏁]SNV
-vless://14b48651-3738-4926-bc09-4c04e87ff80b@static.lotussec.com:443?mode=stream-one&path=%2FJoin-JavidnamanIran-on-Telegram&security=tls&alpn=h2&encryption=none&insecure=0&fp=chrome&type=xhttp&allowInsecure=0#[🇩🇪]SNV
-vless://f798a2c4-c51b-409d-b349-ca8455b36796@104.26.14.85:8443?path=%2Fdownload.php&security=tls&encryption=none&insecure=0&host=chopin.adaspoloandco.com&fp=chrome&type=ws&allowInsecure=0&sni=chopin.adaspoloandco.com#[🇨🇦]SNV
-vless://f798a2c4-c51b-409d-b349-ca8455b36796@104.26.14.85:8443?path=%2Fdownload.php%23TELEGRAM-MARAMBASHI_MARAMBASHI%3Fed%3D2560&security=tls&encryption=none&insecure=0&host=chopin.adaspoloandco.com&fp=chrome&type=ws&allowInsecure=0&sni=chopin.adaspoloandco.com#[🇨🇦]SNV
-vless://cf39fab0-bb85-42cb-9945-2ad69d78e575@104.26.14.85:443?path=%2FGOrbEh&security=tls&encryption=none&insecure=0&host=rubifen.adaspoloandco.com&type=ws&allowInsecure=0&sni=rubifen.adaspoloandco.com#[🇨🇦]SNV
 trojan://telegram-id-privatevpns@52.59.22.156:22222?security=tls&alpn=http/1.1&headerType=none&type=tcp&sni=trojan.burgerip.co.uk#[🇩🇪]SNV
 trojan://Mitivpn@151.101.110.219:443?path=%2Fde&security=tls&alpn=http%2F1.1&insecure=0&host=3-mitivpn.global.ssl.fastly.net&fp=chrome&type=ws&allowInsecure=0&sni=global.fastly.com#[🏁]SNV
 trojan://telegram-id-privatevpns@35.178.85.188:22222?security=tls&alpn=http/1.1&headerType=none&type=tcp&sni=trojan.burgerip.co.uk#[🏁]SNV
@@ -39,7 +36,6 @@ trojan://telegram-id-directvpn@52.31.10.136:22222?security=tls&alpn=http/1.1&hea
 trojan://FH72359861@engaging-toucan.rooster465.autos:443?security=tls&insecure=0&headerType=&type=tcp&allowInsecure=0#[🇩🇪]SNV
 trojan://FH72359861@3.64.117.92:443?security=tls&insecure=0&headerType=&fp=chrome&type=tcp&allowInsecure=0&sni=epic-iguana.rooster465.autos#[🇩🇪]SNV
 trojan://FH72359861@renewed-porpoise.rooster465.autos:443?security=tls&insecure=0&headerType=&type=tcp&allowInsecure=0#[🇩🇪]SNV
-trojan://FH72359861@43.207.83.177:443?security=tls&insecure=0&headerType=none&type=tcp&allowInsecure=0&sni=settled-camel.rooster465.autos#[🇯🇵]SNV
 trojan://xrVEJA7RH7AKaJfOUVfsLA@37.202.231.202:2376?pcs=27625bde11efb641b59159b58d1f7d813ba861e4373867c69c61a96f4923bd03&security=tls&insecure=0&headerType=none&type=tcp&allowInsecure=0&sni=pish-data-03.myket.ir#[🇮🇷]SNV
 trojan://FH72359861@3.120.70.66:443?security=tls&insecure=0&headerType=&type=tcp&allowInsecure=0&sni=renewed-porpoise.rooster465.autos#[🇩🇪]SNV
-trojan://humanity@188.114.97.7:443?path=%2Fassignment&security=tls&insecure=0&ech=ip.gs%2Budp%3A%2F%2F8.8.8.8&type=ws&allowInsecure=0&sni=www.ignitelimit.com#[🇨🇦]SNV
+trojan://FH72359861@43.207.83.177:443?security=tls&insecure=0&headerType=none&type=tcp&allowInsecure=0&sni=settled-camel.rooster465.autos#[🇯🇵]SNV
