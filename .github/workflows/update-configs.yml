@@ -3,7 +3,7 @@ name: Update V2Ray Configs
 on:
   schedule:
     # هر ۳۰ دقیقه یک‌بار اجرا می‌شود (زمان UTC)
-    - cron: "*/30 * * * *"
+    - cron: "*/15 * * * *"
   workflow_dispatch: {}   # امکان اجرای دستی از تب Actions
 
 permissions:
